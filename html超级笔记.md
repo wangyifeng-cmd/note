@@ -1,4 +1,7 @@
-	mate的用法
+# Html,css笔记
+
+### mate的用法
+
 <mate name="keyword" content="网页的关键字 用英文逗号隔开">
 <mate name="description" content="对网站的描述 一般为一段话">
 
