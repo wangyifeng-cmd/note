@@ -203,3 +203,74 @@ console.log(str1 - 0);//NaN
 console.log(str + 0);//18abc0
 ```
 
+### 弹窗输入
+
+```js
+var age = prompt("请输入您的年龄");
+```
+
+### 三元运算符
+
+```js
+var age = 18;
+var result = age >= 18 ? "成年了" : "未成年";
+console.log(result);//成年了
+```
+
+### switch~case（判断一个值的时候用）
+
+```js
+var num = parseInt(prompt("输入数字"))
+switch (num) {
+    case "1":
+        console.log("星期一");
+        break;
+    case "2":
+        console.log("星期二");
+        break;
+    case "3":
+        console.log("星期三");
+        break;
+    case "4":
+        console.log("星期四");
+        break;
+    case "5":
+        console.log("星期五");
+        break;
+    case "6":
+        console.log("星期六");
+        break;
+    case "7":
+        console.log("星期日");
+        break;
+    default:
+        console.log("你输入的超出范围了喔");
+        break;
+}
+```
+
+### 输出在界面
+
+```js
+document.write("我好帅");
+```
+
+### break和continue
+
+```js
+break;//直接终止循环
+continue;//直接跳出此次循环，跳到下一次循环
+```
+
+### 反转数组
+
+```js
+var array = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+for (var i = 0; i <= array.length / 2; i++) {
+    var temp = array[array.length - 1 - i];
+    array[array.length - 1 - i] = array[i];
+    array[i] = temp;
+}
+console.log(array);
+```
+
