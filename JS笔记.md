@@ -1,3 +1,5 @@
+
+
 # JS笔记
 
 ### js组成部分
@@ -274,3 +276,79 @@ for (var i = 0; i <= array.length / 2; i++) {
 console.log(array);
 ```
 
+### 函数
+
+```js
+function fun(形参) {
+    var sum = x + y;
+    return sum;
+}
+var result = fun(实参);
+console.log(result + 39);
+```
+
+## 实参和形参个数不一致
+
+### 第一种情况，实参大于形参，多的实参不调用
+
+```js
+function Sum(x, y) {
+    return x + y;
+}
+console.log(Sum(10, 20, 30));//30
+```
+
+### 第二种情况，形参大于实参，多的形参没有赋值=undifined，数字 + undifined = NaN
+
+```js
+function Sum1(x, y, z) {
+    return x + y + z;
+}
+console.log(Sum1(10, 10));//NaN
+```
+
+### 如果函数没有返回值，默认返回undifined
+
+```js
+function fun1(x, y) {
+    var result = x + y;
+}
+console.log(fun1(1, 2));//undifined
+```
+
+### 如果函数有返回值return，默认一样返回undifined
+
+```js
+function fun2(x, y) {
+    var result = x + y;
+    return;
+}
+console.log(fun2(1, 2));//undifined
+```
+
+### return后面的值都不会执行
+
+```js
+function getsum(x,y){
+     return x + y;
+     console.log("我好帅");
+}
+console.log(getsum(10,20));
+```
+
+### 用圆周率PI求圆的面积
+
+```js
+function C(r) {
+    return Math.PI * r * r;
+}
+console.log(C(10));
+```
+
+### 函数自调用
+
+```js
+(function(){
+  console.log("函数自调用")
+ })()
+```
