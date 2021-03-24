@@ -345,6 +345,15 @@ function C(r) {
 console.log(C(10));
 ```
 
+### 匿名函数
+
+```js
+var f = function (){
+     console.log("f相当于一个函数名字");
+}
+f();
+```
+
 ### 函数自调用
 
 ```js
@@ -352,3 +361,110 @@ console.log(C(10));
   console.log("函数自调用")
  })()
 ```
+
+### 伪元素（不需要形参了，优化代码）
+
+```js
+function fun1() {
+    var sum = 0;
+    for (let i = 0; i < arguments.length; i++) {
+        sum += arguments[i];
+    }
+    return sum;
+}
+console.log(fun1(10, 20, 30, 40));
+```
+
+### 判断是否是闰年
+
+```js
+function fun(){
+     return year % 4 == 0 && year % 100 != 0 || year % 400 == 0;
+}
+```
+
+### 斐波那契数列，一年有多少个兔子
+
+```js
+var num1 = 1;
+var num2 = 1;
+var sum = 0;
+for (var i = 3; i <= 12; i++) {
+    sum = num1 + num2;
+    num1 = num2;
+    num2 = sum;
+}
+console.log(sum);
+```
+
+### 全局变量中this指向window
+
+```js
+console.log(this);//window
+```
+
+### 普通函数里面this指向window
+
+```js
+function fun() {
+    console.log(this);
+}
+fun();//window
+```
+
+### 变量提升，当网页一打开，首先浏览器会先遍历一遍代码，浏览器会把带var和function 提前声明
+
+```js
+//第一，如果是var浏览器会先提前声明 var age；只声明，不去赋值，默认的结果underfined
+//第二，变量提升，只提升等号左边的，不会提升等号后面的
+//第三，如果是function会声明加定义，会把整个function函数提升到代码前面
+```
+
+```js
+//变量提升-示例1
+console.log(a);//undefined
+var a = 123;
+console.log(a);//123
+function f(){
+     console.log(a);undefined
+     var a = 456;
+     console.log(a);//456
+}
+f();
+console.log(a);
+
+//伪代码
+var a;
+a = 123;
+console.log(a);//123
+function f(){
+     var a;
+     console.log(a);//undefined
+     a = 456;
+     console.log(a);//456
+}
+f();
+console.log(a);//123
+
+//示例2
+var foo = 1;
+function fun(){
+     if(!foo){
+          var foo = 10;
+     }
+     console.log(foo);
+}
+fun();
+
+//伪函数
+var foo = 1;
+function fun(){
+     var foo;
+     if(!foo){
+          foo = 10j;
+     }
+     console.log(foo);
+}
+fun();
+```
+
