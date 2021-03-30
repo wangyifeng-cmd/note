@@ -264,7 +264,7 @@ break;//直接终止循环
 continue;//直接跳出此次循环，跳到下一次循环
 ```
 
-### 反转数组
+### 反转数组，数组名不能为name，原因是name特殊，在赋值的时候浏览器强制转成了string。
 
 ```js
 var array = [1, 2, 3, 4, 5, 6, 7, 8, 9];
@@ -446,13 +446,13 @@ function f(){
 f();
 console.log(a);//123
 
-//示例2
+//示例二
 var foo = 1;
 function fun(){
      if(!foo){
           var foo = 10;
      }
-     console.log(foo);
+     console.log(foo);//10
 }
 fun();
 
@@ -463,8 +463,331 @@ function fun(){
      if(!foo){
           foo = 10j;
      }
-     console.log(foo);
+     console.log(foo);//10
 }
 fun();
+
+//示例三
+console.log(a,b,c);//undefined undefined undefined
+var a = 10,b = 20, c = 30;
+function fun(a){
+     console.log(a,b,c);//10 undefined 30
+     var b = a = c =100;
+     console.log(a,b,c);//100 100 100
+}
+fun(10,20);
+console.log(a,b,c);//10 20 100
+
+//伪代码
+var a;
+var b;
+var c;
+console.log(a,b,c);//undefined undefined undefined
+var a = 10,b = 20, c = 30;
+function fun(a){
+     var b;
+     console.log(a,b,c);//10 undefined 30
+     b = a = c = 100;
+     console.log(a,b,c);//100 100 100
+}
+fun(10,20);
+console.log(a,b,c);//10 20 100
+```
+
+### 内置对象一
+
+```js
+//内置对象（系统自带的），后面会学习浏览器对象BOM，自定义构造函数对象（new一下就会有对象了---面向对象里面会详细讲解）
+//内置对象：Math，Date，Arr，String···
+Math.PI//派
+Math.max()//最大值
+Math.min()//最小值
+Math.abs()//绝对值
+Math.random()//随机获取 0 到 1 之间的随机数，[0,1)
+Math.ceil(12.5)//13   向上取整
+Math.floor(12.5)//12   向下取整
+Math.pow(2,4)//16   求知数次幂
+Math.sqrt(16)//4   求平方根
+Math.round(10.98)//11   小数四舍五入
+```
+
+### 随机点名
+
+```js
+var names = ["wyf","zwh","myl","hjh"];
+console.log(names[parseInt(Math.random() * names.length)]);
+```
+
+### 内置对象二
+
+```js
+function da(dt) {
+    var y = dt.getFullYear(); //获取年
+    var m = dt.getMonth() + 1; //我们的月是从0开始的，所以要加1
+    var d = dt.getDate(); //获取日期
+    var h = dt.getHours(); //获取小时
+    var min = dt.getMinutes(); //获取分钟
+    var sec = dt.getSeconds(); //获取秒
+    var week = dt.getDay(); //获取星期几
+    switch (week) {
+        case 1:
+            week = "星期一";
+            break;
+        case 2:
+            week = "星期二";
+            break;
+        case 3:
+            week = "星期三";
+            break;
+        case 4:
+            week = "星期四";
+            break;
+        case 5:
+            week = "星期五";
+            break;
+        case 6:
+            week = "星期六";
+            break;
+        case 0:
+            week = "星期天";
+            break;
+    }
+    m = m < 10 ? "0" + m : m;
+    d = d < 10 ? "0" + d : d;
+    h = h < 10 ? "0" + h : h;
+    min = min < 10 ? "0" + min : min;
+    sec = sec < 10 ? "0" + sec : sec;
+    return y + "年" + m + "月" + d + "日" + h + "小时" +
+        min + "分钟" + sec + "秒" + week;
+}
+var dt = new Date(); //获取系统日期
+console.log(da(dt));
+
+```
+
+### 随机取颜色 #xxxxxx
+
+```js
+function getColor() {
+    var str = "#";
+    var arr = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e", "f", "g"];
+    for (let i = 0; i < 6; i++) {
+        str += arr[parseInt(Math.random() * arr.length)];
+    }
+    return str;
+}
+console.log(getColor());
+```
+
+### 当页面加载时运行---入口函数
+
+```js
+window.onload = function() {
+}
+```
+
+```js
+//获取id改div的背景颜色
+window.onload = function() { document.getElementById("color").style.backgroundColor = getColor();//利用
+}
+```
+
+```js
+document --- 文档
+get --- 获取
+Element --- 元素
+By --- 通过
+Id --- 页面的id
+```
+
+### 获取数组索引的值  .chatAt()
+
+```js
+var str = "wyfhaoshuai";
+console.log(str.chatAt(10));
+```
+
+### 内置对象二
+
+```js
+//.charAt();获取索引所在位置的字符
+var str = "fjdksovhwiorfvsioajdfiosghviowjfidopafjpioqafjw"
+console.log(str.charAt(11));
+
+//.String.fromCharCode()获取ascll码中对应的值
+var word = String.fromCharCode(65, 66, 67);
+console.log(word);
+var sos = String.fromCharCode(83, 79, 83);
+console.log(sos);
+
+//.concat()返回拼接之后的字符串
+var str5 = "我们";
+var str6 = str5.concat("wyf", "hao", "shuai");
+console.log(str6); //我们wyfhaoshuai
+
+//.indexOf("想找的字符串"，送哪里开始找)  返回想找的字符串的索引  
+var str10 = "不是吧你别在这里吵了";
+var index = str10.indexOf("吵", 8);
+console.log(index); //8
+
+//.lastIndexOf("想找的字符串")  返回想找的字符串的最后一个的索引
+var str10 = "不是吵吧你别在这里吵了";
+var index = str10.lastIndexOf("吵");
+console.log(index); //9
+
+//.replace("替换目标"，"替换对象")  替换字符串
+var str11 = "wyf好帅，是一个靓仔";
+str12 = str11.replace("帅", "靓");
+console.log(str12); //wyf好靓，是一个靓仔
+
+//.slice(开始的索引值，结束的索引值（不包括）)提取两个索引之间的字符
+var str13 = "你开玩笑是吧不要这样";
+var str14 = str13.slice(4, 7);
+var str15 = str13.slice(4); //把剩下的所有都提取
+console.log(str14);
+
+//.splice(n,m,x,y,z)  把数组从索引n开始删除m个元素，用x,y,z代替删除的m项，返回值是被删的数组，原来的数组已经改变(备注：增删改除)
+var str22 = [1, 2, 3, 4, 5, 6];
+var str23 = str22.splice(2, 2, 7, 8, 9);
+console.log(str23);//3,4
+console.log(str22);//1,2,7,8,9,5,6
+//扩展1，当m是0的时候，他是把x,y,z..添加到索引n的前面
+var str24 = [1, 2, 3, 4, 5, 6];
+var str25 = str24.splice(2, 0, 7, 8, 9);
+console.log(str24);//1,2,7,8,9,3,4,5,6
+//扩展2，没有xyz，相当于直接删除m项
+var str26 = [1, 2, 3, 4, 5, 6];
+var str27 = str26.splice(2, 2);
+console.log(str26);//1,2,5,6
+//扩展3，当什么都没写，返回空数组
+var str30 = [1, 2, 3, 4, 5, 6];
+var str31 = str30.splice();
+console.log(str31);//[]
+console.log(str30);//1,2,3,4,5,6
+//扩展3，当.splice(0)是，相当于删除整个数组
+var str28 = [1, 2, 3, 4, 5, 6];
+var str29 = str28.splice(0);
+console.log(str29);//1,2,3,4,5,6
+console.log(str28);//[]
+
+//.split("22","拆分后留下的字符串个数")  以规定字符拆分字符串形成数组
+var str16 = "w|y|f|h|a|o";
+var str17 = str16.split("|");
+console.log(str17); //["w", "y", "f", "h", "a", "o"]
+
+//.substr("开始位置","截取个数")   返回截取后的字符，个数可以省略
+var str18 = "我们都是靓仔，靓妹";
+var str19 = str18.substr(4, 2);
+console.log(str19);//靓仔
+
+//.substring("开始位置","结束的位置（不包含）")  返回截取后的字符
+var str20 = "我们都是靓仔，靓妹";
+var str21 = str20.substring(4, 6);
+console.log(str21);//靓仔
+
+//.toLocaleLowerCase()  转换成小写字母
+//.toLowerCase()  转换成小写字母
+var str1 = "LIVE ME";
+console.log(str1.toLocaleLowerCase());
+console.log(str1.toLowerCase());
+
+//.toLocaleUpperCase()  转换成大写字母
+//.toLowerCase()  转换成大写字母
+var str2 = "live me";
+console.log(str2.toLocaleUpperCase());
+console.log(str2.toUpperCase());
+
+//.trim()  删除两端的空格，中间的空格删不了
+var str3 = "   张文瀚  傻逼   "
+console.log(str3.trim());
+```
+
+### 作业
+
+```js
+//找其中的字符串
+var str4 = "张文瀚unglyfulishstupid";
+var index = str4.indexOf("张文瀚");
+console.log(index);//0
+console.log(str4.substr(index, 3));//张文瀚
+
+//找字符串中所有想找到字符的index
+var str5 = "jhkgfldsjghdlsjghdlsjghdlslfjkghdksjfhg";
+var index1 = 0;
+var key = "j";
+while ((index1 = str5.indexOf(key, index1)) != -1) {
+    console.log(index1);
+    index1 += key.length;
+}
+```
+
+### 数组
+
+```js
+//第一种
+var arr1 = [1,2,3,4,5];
+//第二种--内置构造函数方式new来创建
+var arr2 = new Array(1,2,3,4,5);
+
+//第一种和第二种的区别
+var arr3 = [6];
+console.log(arr1.length);//1
+var arr4 = new Array(6);//创建对象，只写一个数字在，就表示有这么多个数字的空字符
+console.log(arr4.length);//6
+console.log(arr4);//empty*6
+```
+
+### 判断数组的方式
+
+```js
+// instanceof 判断这个对象是否是数组，如果是为ture，如果不是为false
+var arr1 = [];
+console.log(arr1 instanceof array);//ture
+var arr2 = 10;
+console.log(arr2 instanceof array);//false
+
+// isArray
+var arr3 = [];
+console.log(Array.isArray(arr3));//ture
+```
+
+### 内置对象三
+
+```js
+//.push(值1，值2...)  给数组后面添加元素，返回值为数组的长度
+var arr1 = [1,2,3,4,5];
+var result1 = arr1.push(100,200);
+console.log(result1,arr1);//1,2,3,4,5,100,200
+
+//.unshift(值1，值2...)  给数组前面添加元素
+var arr2 = [1,2,3,4,5];
+var result2 = arr2.unshift(100,200);
+console.log(result2,arr2);//100,200,1,2,3,4,5
+
+//.pop()  删除数组的最后一项，返回值是删除的那一项
+var arr3 = [1,2,3,4,5];
+var result3 = arr3.pop();
+console.log(result3,arr3);//1,2,3,4
+
+//.shift()  删除数组的第一项，返回值是删除的那一项
+var arr4 = [1,2,3,4,5];
+var result4 = arr4.shift();
+console.log(result4,arr4);//2,3,4,5
+
+//.reverse()  数组反转
+var arr5 = [1,2,3,4,5];
+var result5 = arr5.reverse();
+console.log(result5);//5,4,3,2,1
+
+//.sort()  数组排序，只能排序10以内的数字
+var arr6 = [3,6,3,7,8,1,2];
+var result6 = arr6.sort();
+console.log(result6);//1, 2, 3, 3, 6, 7, 8
+
+//.sort(dunction(a,b){a - b})  数字如果超过10，用“回调函数”，如果是b-a就是从大到小
+var arr7 = [1,100,232,45,65,4,87];
+var result7 = arr7.sort(function(a,b){
+     return a - b;
+})//1, 4, 45, 65, 87, 100, 232
 ```
 
