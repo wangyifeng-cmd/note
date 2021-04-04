@@ -1,9 +1,19 @@
 # Html,css笔记
 
+### 快捷键
+
+```js
+alt + shift + 上下键 //复制这一行到上下位置
+```
+
+
+
 ### mate的用法
 
+```html
 <mate name="keyword" content="网页的关键字 用英文逗号隔开">
 <mate name="description" content="对网站的描述 一般为一段话">
+```
 
      i和em（加粗）
      strong和em （斜体）
@@ -194,6 +204,7 @@ text-overflow:ellipsis;(文字超出部分显示状态)
 user-selet:none;
 
 	定义为块元素
+display:none;(隐藏)
 display:block;
 display:inline;(行内元素，宽高失效)
 display:inline-block(支持宽高的块元素)
@@ -362,7 +373,7 @@ css去除边框线：input{
  </optgroup>
 </select>
 
-	radio单选框，选择小圆圈，必须name值相同，默认选中用checked
+	radio单选框，选择小圆圈，必须name值相同，默认选中用checked，男女
 性别：
 <input checked type="radio" value="nan" name="sex">男
 <input type="radio" value="nv" name="sex">女

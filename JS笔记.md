@@ -362,7 +362,7 @@ f();
  })()
 ```
 
-### 伪元素（不需要形参了，优化代码）
+### 伪元素（不需要形参了，优化代码）伪数组
 
 ```js
 function fun1() {
@@ -790,4 +790,203 @@ var result7 = arr7.sort(function(a,b){
      return a - b;
 })//1, 4, 45, 65, 87, 100, 232
 ```
+
+## DOM Document Object Model 文档对象模型
+
+### 入口函数：<u>单独  js  文件</u>   或   <u>script在body上面</u>    对文档处理需要加载页面
+
+```js
+window.onload = function() {
+    //文档处理内容
+}
+```
+
+### 鼠标事件
+
+```js
+onclick//单击
+ondblclick//双击
+onmouseover//经过
+onmouseout//离开
+```
+
+### 改img的图片 ，动作在控件里面
+
+```html
+<img src = "./图片2.jpg" id="i"></img>
+<button onclick = "img()"></button>//
+
+```
+
+```js
+function img(){
+     document.getElementById("i").src("./图片1.jpg");
+}
+```
+
+### 动作在js里
+
+```html
+<button class="d" id="btn"></button>
+```
+
+```js
+window.onload = function() {
+    var btn = document.getElementById("btn");
+    btn.onclick = function() {//
+        alert("好啊");
+    }
+}
+```
+
+###   获取text的内容
+
+```js
+p.innerText = "好啊";
+```
+
+### 获取多个相同标签，把这多个标签变成集合（伪数组）（例子为p标签）
+
+```js
+var pObjs = document.getElementsByTagName("p");
+console.log(pObjs);//p, p, p, p, p, p
+for (var i = 0; i < pObjs.length; i++) {
+    pObjs[i].innerText = "傻了吧";
+}
+```
+
+### 修改a标签的href
+
+```js
+var aObj = document.getElementById("a");
+aObj.href = "https://app.mockplus.cn/team/pwajjstnyc";
+```
+
+### 隐藏和显示图片
+
+```html
+<div>
+     <input type="button" value="隐藏" id="dis1">
+     <input type="button" value="显示" id="dis2">
+</div>
+<div id="i">
+     <img src="./pic/光.jpg" alt="" id="img">
+</div>
+```
+
+```js
+var dis1 = document.getElementById("dis1");
+var dis2 = document.getElementById("dis2");
+var i = document.getElementById("i");
+dis1.onclick = function() {
+     i.style.display = "none";//隐藏
+}
+dis2.onclick = function() {
+     i.style.display = "block";//显示
+}
+```
+
+### public公用调用函数--my$()
+
+```js
+//独立设一个公用js文件
+function my$(id){
+    	return document.getElementById(id);
+}
+```
+
+```js
+//在独立js文件中调用
+my$("html中的id");
+```
+
+### 调用<img>的width和height的数据不用加px
+
+```js
+wyf$("img").width = "200";
+```
+
+### this的用法1
+
+```html
+<img src="./pic/昼夜1.jpg" alt="" id="night">
+```
+
+```js
+wyf$("night").onmouseover = function() {
+     this.src = "./pic/昼夜2.jpg";
+}
+wyf$("night").onmouseout = function() {
+     this.src = "./pic/昼夜1.jpg";
+}
+```
+
+### 排他思想
+
+```html
+<input type="button" value="叼啊">
+<input type="button" value="叼啊">
+<input type="button" value="叼啊">
+<input type="button" value="叼啊">
+<input type="button" value="叼啊">
+<input type="button" value="叼啊">
+<input type="button" value="叼啊">
+<input type="button" value="叼啊">
+<input type="button" value="叼啊">
+<input type="button" value="叼啊">
+```
+
+```js
+var bObjs = document.getElementsByTagName("input");
+    for (var i = 0; i < bObjs.length; i++) {
+        bObjs[i].onclick = function() { //获取每个按钮点击事件
+            for (let j = 0; j < bObjs.length; j++) { //第一件事情
+                bObjs[j].value = "叼啊"; //把每个按钮的值改为相同的值
+            }
+            this.value = "菜啊"; //第二件事情，把自己变单独的值
+        }
+    }
+```
+
+### 改变性别，用checked为true判定
+
+```html
+<input type="button" value="女的" id="n">
+<input type="radio" name="nex" id="nan">男
+<input type="radio" name="nex" id="nv">女
+```
+
+```js
+wyf$("n").onclick = function() {
+     wyf$("nv").checked = "fjdskfjsdko";//true就是被选中
+}
+```
+
+### 下拉选择菜单，用selected为true判定
+
+```html
+<input type="button" value="王译锋喜欢吃的" id="wyf">
+<select name="吃的" id="">
+     <option value="牛腩粉">牛腩粉</option>
+     <option value="海七沙县炒面">海七沙县炒面</option>
+     <option value="红茶玛奇朵" id="hong" >红茶玛奇朵</option>
+     <option value="培根">培根</option>
+     <option value="ei">ei</option>
+</select>
+```
+
+```js
+wyf$("wyf").onclick = function() {
+     wyf$("hong").selected = true;
+}
+```
+
+### 点击改变样式，背景宽度长度。。
+
+```js
+this.style.width = "100px";
+this.style.backgroundColor = "skyblue";
+```
+
+
 
