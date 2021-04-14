@@ -1,4 +1,4 @@
-
+ 
 
 # JS笔记
 
@@ -251,7 +251,7 @@ switch (num) {
 }
 ```
 
-### 输出在界面
+### 输出在界面，用js写入运行后的界面
 
 ```js
 document.write("我好帅");
@@ -988,5 +988,385 @@ this.style.width = "100px";
 this.style.backgroundColor = "skyblue";
 ```
 
+### 同一个按键控制隐藏和显示
 
+- 优化之前
+
+```html
+<input type="button" value="隐藏" id="btn3">
+<img src="./pic/抠肉肚脐3.jpg" alt="" width="200" id="im1">
+```
+
+```js
+wyf$("btn3").onclick = function() {
+     if (this.value == "隐藏") {
+          wyf$("im1").style.display = "none";
+          this.value = "显示";
+     } else {
+          wyf$("im1").style.display = "inline-block";
+          this.value = "隐藏";
+     }
+}
+```
+
+- 优化之后
+
+```css
+.dis_none {
+     display: none;
+}
+```
+
+```html
+<input type="button" value="优化后的隐藏" id="better">
+<div id="clss">优化后隐藏显示的内容</div>
+```
+
+```js
+wyf$("better").onclick = function() {
+     if (wyf$("clss").className != "dis_none") {
+          wyf$("clss").className = "dis_none";
+          this.value = "优化后的显示";
+     } else {
+          wyf$("clss").className = "";
+          this.value = "优化后的隐藏";
+     }
+}
+```
+
+### .className用 js 添加 css 样式
+
+```css
+.cls {
+     width: 100px;
+     height: 100px;
+     background-color: rgb(0, 153, 255);
+}
+```
+
+```html
+<div id="sty">.classname</div>
+```
+
+```js
+wyf$("sty").className = "cls";
+```
+
+### 用三元运算开关灯，夜晚模式和白天模式
+
+```html
+<input type="button" value="开/关灯" id="light">
+```
+
+```js
+wyf$("light").onclick = function() {
+     document.body.style.backgroundColor = document.body.style.backgroundColor != "black" ? "black" : "";
+}
+```
+
+### 获取body
+
+```js
+document.body.style.backgroundColor;
+```
+
+### 按按钮禁止填写文本框
+
+```html
+<input type="button" value="禁止你写字" id="stop">
+<input type="text" name="" id="text">
+```
+
+```js
+wyf$("stop").onclick = function() {
+     wyf$("text").disabled = "true";
+}
+```
+
+### 让a标签无法跳转return false
+
+- 第一种方法，行内解决
+
+```html
+<a href="https://www.hanjutv2020.com/" id = "a" onclick="alert('哎呀  你电我干嘛'); return false">让a标签无法跳转</a>
+```
+
+- 第二种方法，js解决
+
+```js
+wyf$("a").onclick = function() {
+     return false;
+}
+```
+
+### 美女相册(头像)
+
+```html
+<ul id="l">
+     <li>
+          <a href="./pic/头像2.jpeg"><img width="100" src="./pic/头像2.jpeg" alt=""></a>
+     </li>
+     <li>
+          <a href="./pic/头像16.jpeg"><img width="100" src="./pic/头像16.jpeg" alt=""></a>
+     </li>
+     <li>
+          <a href="./pic/头像15.jpeg"><img width="100" src="./pic/头像15.jpeg" alt=""></a>
+     </li>
+     <li>
+          <a href="./pic/头像14.jpeg"><img width="100" src="./pic/头像14.jpeg" alt=""></a>
+     </li>
+</ul>
+<img src="./pic/头像20.jpeg" alt="" width="400" id="a1">
+```
+
+```js
+var aObjs = document.getElementById("l").getElementsByTagName("a");
+for (var i = 0; i < aObjs.length; i++) {
+     aObjs[i].onclick = function() {
+          wyf$("a1").src = this.href;
+          return false;
+     }
+}
+```
+
+### 鼠标经过出现，鼠标离开消失（二维码）
+
+```html
+<div class="erweima">
+     <a href="#"></a>
+     <div class="nv hide" id="light">
+          <img src="./pic/光.jpg" alt="" width="150">
+     </div>
+</div>
+```
+
+```js
+var aObj = document.getElementsByTagName("a")[0];
+aObj.onmouseover = function() {
+     wyf$("light").className = "nv show";
+}
+aObj.onmouseout = function() {
+     wyf$("light").className = "nv hide";
+}
+```
+
+### getElementsByName获取相同name值形成集合（伪函数）
+
+```html
+<input type="button" value="别点击喔" id="name"><br>
+<input type="text" value="不是吧！！！" name="name1"><br>
+<input type="text" value="不是吧！！！" name="name2"><br>
+<input type="text" value="不是吧！！！" name="name1"><br>
+<input type="text" value="不是吧！！！" name="name3"><br>
+<input type="text" value="不是吧！！！" name="name1"><br>
+<input type="text" value="不是吧！！！" name="name1"><br>
+```
+
+```js
+wyf$("name").onclick = function() {
+     var inputs = document.getElementsByName("name1");
+     for (var i = 0; i < inputs.length; i++) {
+          inputs[i].value = "你真点啊";
+     }
+}
+```
+
+### querySelector和getElementById相似获取id，但是获取的id前要加#
+
+### querySelectorAll和getElementByClassName相似获取class，但是获取的class前要加.
+
+```html
+<input type="button" value="别点击喔" id="name"><br>
+<div id="hong"></div>
+```
+
+```js
+var a = document.querySelector("#name");
+a.onclick = function() {
+     var d = document.querySelector("#hong");
+     d.style.backgroundColor = "black";
+}
+```
+
+### 获取元素的方式总结
+
+- 根据  "id"  获取元素：document.getElementById("id的值")
+
+- 根据  "标签"  获取元素：document.getElementsByTagNmae("标签的名字")
+
+- 根据  "name的值"  获取元素：document.getElementsByName("name的值")
+
+- 根据  "类样式(class)"  获取元素：document.getElementByClassName("类样式的名字")
+
+- 根据  "选择器的方式"  获取元素：
+
+  1.document.querySelector("#id")
+
+  2.document.querySelector(".class")
+
+- 获取  "body"  标签：document.body
+
+### 获取焦点和失去焦点
+
+```html
+<input type="text" name="" class="t" id="t" value="你个傻逼">
+```
+
+```js
+wyf$("t").onfocus = function() {
+     if (this.value == "你个傻逼") {
+          this.value = "";
+          this.style.color = "black";
+}
+wyf$("t").onblur = function() {
+     if (this.value == "") {
+          this.value = "你个傻逼";
+          this.style.color = "gray";
+     }
+}
+```
+
+### 自己添加属性，随便取名
+
+- 添加属性：setAttribute("属性的名字","属性的值")
+- 获取属性：getAttribute("属性的名字")
+
+```html
+<ul id="uu">
+     <li>好嗨哟</li>
+     <li>牛啊牛啊</li>
+     <li>绣得天花乱坠</li>
+     <li>抱歉</li>
+     <li>不是吧</li>
+</ul>
+```
+
+```js
+var list = document.getElementsByTagName("li");
+for (var i = 0; i < list.length; i++) {
+     list[i].setAttribute("xswl", (i + 1) * 20);
+     list[i].onclick = function() {
+          alert(this.getAttribute("xswl"));
+     }
+}
+```
+
+###    删除标签的属性（包括系统自带的）
+
+```html
+<input type="button" value="删除标签属性" id="btn">
+<div id="d" score="30" class="d"></div>
+```
+
+```js
+wyf$("btn").onclick = function() {
+     wyf$("d").removeAttribute("score");
+     wyf$("d").removeAttribute("class");//系统自带的class
+}
+```
+
+### 添加文本  innerText和innerHTML的区别
+
+```html
+<input type="button" value="点击增加inner" id="btn">
+<div class="inner" id="inner"></div>
+```
+
+```js
+wyf$("btn").onclick = function() {
+     wyf$("inner").innerText = "牛啊牛啊";
+     wyf$("inner").innerText = "<p>一碗化州牛腩粉 吃出男人的沉稳</p>"
+     wyf$("inner").innerHTML = "牛啊牛啊";
+     wyf$("inner").innerHTML = "<p>一碗化州牛腩粉 吃出男人的沉稳</p>";
+}
+```
+
+### 导航栏，列表
+
+```css
+#hd {
+     font-size: 0;
+}
+
+#hd span {
+     display: inline-block;
+     width: 50px;
+     height: 30px;
+     font-size: 16px;
+     text-align: center;
+     line-height: 30px;
+}
+
+#bd ul li {
+     width: 200px;
+     height: 200px;
+     background-color: rgb(0, 255, 98);
+}
+
+.hide {
+     display: none;
+}
+
+.show {
+     display: inline-block;
+}
+
+.sele {
+     background-color: rgb(255, 145, 0);
+}
+```
+
+```html
+<div>
+     <div id="hd">
+          <span class="sele">wyf1</span>
+          <span>wyf2</span>
+          <span>wyf3</span>
+          <span>wyf4</span>
+     </div>
+     <div id="bd">
+          <ul>
+               <li class="show">1</li>
+               <li>2</li>
+               <li>3</li>
+               <li>4</li>
+          </ul>
+     </div>
+</div>
+```
+
+```js
+var sp = document.getElementsByTagName("span");
+var li = document.getElementsByTagName("li");
+for (var i = 0; i < li.length; i++) {
+     if (li[i].className != "show") {
+          li[i].className = "hide";
+     }
+}
+for (var i = 0; i < sp.length; i++) {
+     sp[i].setAttribute("index", i);
+     sp[i].onclick = function() {
+          for (var j = 0; j < sp.length; j++) {
+               sp[j].removeAttribute("class");
+          }
+          this.className = "sele";//上面导航栏的排他
+          var num = this.getAttribute("index");
+          for (var k = 0; k < li.length; k++) {
+               li[k].className = "hide";
+          }
+          li[num].className = "show";//下面界面的排他
+     }
+}
+```
+
+### 出现Cannot set property 'className' of undefined的问题
+
+> for (var i = 0; i < sp.length; i++) {
+>      sp[i].setAttribute("index", i);
+>      sp[i].onclick = function() {
+>      li[i].className = "show";//这行出现问题
+>      }
+> }
+>
+> 由于这是事件过程，当鼠标移到元素上触发事件时，i的值早已不是当初声明事件过程时的那个i了，而是等于oLi.length（你用console.log把i的值输出一下就知道了），因此oLi[i]实际上就已经超出oLi的范围了，所以是undefined
 

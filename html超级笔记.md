@@ -209,7 +209,7 @@ display:block;
 display:inline;(行内元素，宽高失效)
 display:inline-block(支持宽高的块元素)
 
-	代码中换行符导致行内块元素中间有空格，去除空格，可以加一下代码，空格解析
+	代码中换行符导致行内块元素中间有空格，去除空格，可以加一下代码，空格解析（中间有间隙）
 父类{
  font-zise:0;
 }
@@ -635,3 +635,9 @@ align-content: space-between;
 3.盒模型 width height padding
 4.文字样式 font-size text-align
 5.视觉效果 bgc color
+
+# 备注
+
+### 问题一：添加      font-size: 0;     后，后面的文字消失
+
+> 答：需要重新设置font-size: 16px;
