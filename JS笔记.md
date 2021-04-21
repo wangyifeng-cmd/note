@@ -1281,7 +1281,7 @@ wyf$("btn").onclick = function() {
 }
 ```
 
-### 导航栏，列表
+### 导航栏，tab栏
 
 ```css
 #hd {
@@ -1369,4 +1369,300 @@ for (var i = 0; i < sp.length; i++) {
 > }
 >
 > 由于这是事件过程，当鼠标移到元素上触发事件时，i的值早已不是当初声明事件过程时的那个i了，而是等于oLi.length（你用console.log把i的值输出一下就知道了），因此oLi[i]实际上就已经超出oLi的范围了，所以是undefined
+
+## 节点的介绍
+
+### 必须要熟练---倒背如流
+
+> nodeType：节点类型（1代表的标签节点，2代表的是属性节点，3代表的是文本节点）
+>
+> nodeName：节点名字（如果是标签节点---获取到的是大写的标签名；如果是属性节点--- 获取到的是小写的属性名；文本节点---获取的是#text）
+>
+> nodeValue：节点的值（如果是标签节点---null，属性节点---属性的值，文本节点---文本内容）
+>
+> |          | nodeType |   nodeName   | nodeValue |
+> | :------: | :------: | :----------: | :-------: |
+> | 标签节点 |    1     | 大写的标签名 |   null    |
+> | 属性节点 |    2     | 小写的属性名 | 属性的值  |
+> | 文本节点 |    3     |    #text     | 文本内容  |
+>
+> 
+
+> #### 对比记忆法
+>
+> DOM节点          HTML文档
+>
+> 元素节点               标签
+>
+> 属性节点               属性
+>
+> 文本节点            文本内容
+>
+> 注释节点               注释
+
+### 获取父级节点   <重点一>
+
+```js
+console.log(uu.parentNode);
+```
+
+### 获取父级元素   <重点二>
+
+```js
+console.log(uu.parentElement);
+```
+
+### 获取子级节点（多个）   <重点三>
+
+```js
+console.log(dd.childNodes);
+```
+
+### 获取子级元素   <重点四>
+
+```js
+console.log(dd.children);
+```
+
+- 以上四种所有浏览器都支持
+
+### 获取子级第一个子节点
+
+```js
+console.log(dd.firstChild);//IE8中是第一个子元素
+```
+
+### 获取子代第一个子元素
+
+```js
+console.log(dd.firstElementChild);//IE8不支持
+```
+
+### 获取最后一个子节点
+
+```js
+console.log(ll.lastChild);//IE8中是最后一个子元素
+```
+
+### 获取最后一个子元素
+
+```js
+console.log(ll.lastElementChild);//IE8不支持
+```
+
+### 获取前一个兄弟节点
+
+```js
+console.log(ll.previousSibling);//IE8中是前一个兄弟元素
+```
+
+### 获取前一个兄弟元素
+
+```js
+console.log(ll.previousElementSibling)//IE8不支持
+```
+
+### 获取下一个兄弟节点
+
+```js
+console.log(ll.nextSibling);//IE8中是下一个兄弟元素
+```
+
+### 获取下一个兄弟元素
+
+```js
+console.log(ll.nextElementSibling);//IE8不支持
+```
+
+### 筛选节点
+
+```html
+<div id="hh">
+     <p>一碗化州牛腩粉</p>
+     <span>吃出男人的沉稳</span>
+     <p>一碗龙江猪脚饭</p>
+     <span>吃出男人的浪漫</span>
+     <p>经不经典我不管</p>
+     <span>我就喜欢这一款</span>
+     <p>人不装逼天打雷劈</p>
+     <span>装逼装的好容易当领导</span>
+     <p>放心吧 在打你之前我嚼了炫迈</p>
+     <span>根本停不下来</span>
+</div>
+```
+
+```js
+var pObjs = wyf$("hh").childNodes;
+for (var i = 0; i < pObjs.length; i++) {
+     if (pObjs[i].nodeType == 1 && pObjs[i].nodeName == "P") {
+          pObjs[i].style.backgroundColor = "pink";
+     }
+}
+```
+
+### 相同标签筛选节点
+
+```html
+<input type="button" value="不是吧" id="btn">
+<ul id="ll">
+     <li>一碗化州牛腩粉</li>
+     <li>吃出男人的沉稳</li>
+     <li>一碗龙江猪脚饭</li>
+     <li>吃出男人的浪漫</li>
+     <li>经不经典我不管</li>
+     <li>我就喜欢这一款</li>
+     <li>人不装逼天打雷劈</li>
+     <li>装逼装的好容易当领导</li>
+</ul>
+```
+
+```js
+var nodes = wyf$("ll").childNodes;
+wyf$("btn").onclick = function() {
+     console.log(nodes);
+     count = 0;
+     for (var i = 0; i < nodes.length; i++) {
+          if (nodes[i].nodeType == 1 && nodes[i].nodeName == "LI") {
+               nodes[i].style.backgroundColor = count % 2 == 0 ? "skyblue" : "pink";
+               count++;//重点：不用i,另外设个count
+          }
+     }
+}
+```
+
+### 	美女相册2
+
+```css
+body {
+     background: url("pic/咒术1.jpg") no-repeat top/cover;
+}
+
+ul {
+     background-color: rgba(255, 255, 255, 0);
+     list-style: none;
+}
+
+#ii {
+     padding-top: 20px;
+     background-color: rgba(192, 192, 192, 0.192);
+     height: 200px;
+     text-align: center;
+}
+```
+
+```html
+<div id="ii">
+     <img src="./pic/咒术1.jpg" alt="">
+     <img src="./pic/咒术2.jpg" alt="">
+     <img src="./pic/咒术3.jpg" alt="">
+</div>
+```
+
+```js
+var imgObjs = wyf$("ii").children;
+var count = 0;
+for (var i = 0; i < imgObjs.length; i++) {
+     imgObjs[i].onclick = function() {
+          document.body.style.background = 'url("' + this.src + '") no-repeat top/cover';//重点为三重引号
+     }
+}
+//正常
+//'url("' + this.src + '") no-repeat top/cover'
+//转义
+//"url(\"" + this.src + "\") no-repeat top/cover"
+//用ES6的写法，先写单撇 后加${}
+//`url("${this.src}") no-repeat top/cover`
+```
+
+### 全选框
+
+```css
+td,
+th {
+     text-align: center;
+     width: 100px;
+}
+```
+
+
+
+```html
+<table>
+     <thead>
+          <tr>
+               <th>
+                    <input type="checkbox" name="" id="i_th">
+               </th>
+               <th>&nbsp;</th>
+               <th>nodeType</th>
+               <th>nodeName</th>
+               <th>nodeValue</th>
+          </tr>
+     </thead>
+     <tbody id="t_td">
+          <tr>
+               <td>
+                    <input type="checkbox" name="" id="">
+               </td>
+               <td>标签节点</td>
+               <td>1</td>
+               <td>大写的标签名</td>
+               <td>属性的值</td>
+          </tr>
+          <tr>
+               <td>
+                    <input type="checkbox" name="" id="">
+               </td>
+               <td>属性节点</td>
+               <td>2</td>
+               <td>小写的属性名</td>
+               <td>null</td>
+          </tr>
+          <tr>
+               <td>
+                    <input type="checkbox" name="" id="">
+               </td>
+               <td>文本节点</td>
+               <td>3</td>
+               <td>#text</td>
+               <td>文本内容</td>
+          </tr>
+     </tbody>
+</table>
+```
+
+```js
+var i_th = wyf$("i_th");
+var i_s = wyf$("t_td").getElementsByTagName("input");
+i_th.onclick = function() {
+     for (var i = 0; i < i_s.length; i++) {
+          i_s[i].checked = this.checked;
+     }
+}//实现点击全选
+for (var i = 0; i < i_s.length; i++) {
+     i_s[i].onclick = function() {
+          console.log(i_s[i]);
+          var flag = true;//假设被全选了
+          for (var j = 0; j < i_s.length; j++) {
+               if (!i_s[j].checked) {
+                    flag = false;//结果没全选
+                    break;
+               }
+          }
+          i_th.checked = flag;
+     }
+}//下面的全选完，全选框自动打勾
+```
+
+### document.write的缺陷bug，当页面加载完之后，在动作（onclick之类）里执行，他会把我们前面的内容覆盖掉
+
+```html
+<input type="button" value="document.write的加载" id="ww">fjdisvnfueovejopvnbwj经常发生滴哦
+```
+
+```js
+wyf$("ww").onclick = function() {
+     document.write("<p>不是吧</p>");
+}
+```
 
