@@ -354,7 +354,7 @@ var f = function (){
 f();
 ```
 
-### 函数自调用
+### 函数自调用（函数自己调用自己）
 
 ```js
 (function(){
@@ -1206,7 +1206,7 @@ a.onclick = function() {
 
 - 获取  "body"  标签：document.body
 
-### 获取焦点和失去焦点
+### 获取焦点和失去焦点（锚点）
 
 ```html
 <input type="text" name="" class="t" id="t" value="你个傻逼">
@@ -1530,7 +1530,7 @@ wyf$("btn").onclick = function() {
 }
 ```
 
-### 	美女相册2
+### 	美女相册2 (切换背景)
 
 ```css
 body {
@@ -1583,8 +1583,6 @@ th {
      width: 100px;
 }
 ```
-
-
 
 ```html
 <table>
@@ -1654,7 +1652,9 @@ for (var i = 0; i < i_s.length; i++) {
 }//下面的全选完，全选框自动打勾
 ```
 
-### document.write的缺陷bug，当页面加载完之后，在动作（onclick之类）里执行，他会把我们前面的内容覆盖掉
+## 创建元素
+
+### 第一种：document.write的缺陷bug，当页面加载完之后，在动作（onclick之类）里执行，他会把我们前面的内容覆盖掉
 
 ```html
 <input type="button" value="document.write的加载" id="ww">fjdisvnfueovejopvnbwj经常发生滴哦
@@ -1664,5 +1664,323 @@ for (var i = 0; i < i_s.length; i++) {
 wyf$("ww").onclick = function() {
      document.write("<p>不是吧</p>");
 }
+```
+
+### 第二种：innerHTML
+
+```html
+<input type="button" value="来份牛腩粉" id="lfnnf">
+<div id="nnf"></div>
+```
+
+```js
+wyf$("lfnnf").onclick = function() {
+     wyf$("nnf").innerHTML = "<p>牛腩粉</p>";
+}
+```
+
+### 第三种：createElement（创建元素）+ appendChild（把创建的元素追加到父元素里）
+
+```html
+<input type="button" value="嗲三种创建元素的方式" id="create">
+<div id="cc"></div>
+```
+
+```js
+wyf$("create").onclick = function() {
+     var pObj = document.createElement("p");//创建函数
+     pObj.innerText = "第三种创建元素的方法";
+     wyf$("cc").appendChild(pObj);//追加到父元素
+}
+```
+
+### 封装一个函数（function），谁需要谁调用--加薪
+
+```js
+btn.onclick = 函数名;//直接名字调用，不用括号（），因为没有返回值
+//封装的函数
+function 函数名(){
+     this.style.backgoundColor = "";//假设内容为把背景设为空
+}
+```
+
+### 创建元素的作业
+
+```html
+<input type="button" value="添加table" id="tt">
+<div id="table"></div>
+```
+
+```js
+var arr = [
+     { name: "免费海贼王", href: "https://www.letvav.cc/dongman/haizeiwang/1-962.html" },
+     { name: "复制颜色块", href: "https://flatuicolors.com/" },
+     { name: "github", href: "https://github.com/" },
+     { name: "在线画图", href: "https://www.processon.com/" },
+     { name: "幼儿成长记", href: "http://baby.bnuz.edu.cn:8081/#/" }
+];
+wyf$("tt").onclick = function() {
+     var tableObj = document.createElement("table");
+     wyf$("table").appendChild(tableObj);
+     tableObj.border = "1";
+     tableObj.cellPadding = "0";
+     tableObj.cellSpacing = "0";
+     for (var i = 0; i < arr.length; i++) {
+          var array = arr[i];
+          var trObj = document.createElement("tr");
+          tableObj.appendChild(trObj);
+          var td1 = document.createElement("td");
+          trObj.appendChild(td1);
+          var td2 = document.createElement("td");
+          trObj.appendChild(td2);
+          td1.innerText = array.name;
+          td2.innerHTML = `<a href="${array.href}">${array.name}</a>`;
+     }
+}
+```
+
+## 事件的方式
+
+### 第一种
+
+- 带on的事件onclick,onmouseover,onmouseout等等。
+
+### 第二种（可以支持同时多个function事件反应）
+
+- 对象.addEventListener("事件类型"，事件处理函数，false)---谷歌，火狐支持，IE等低版本不支持
+
+  > 第一个参数：事件类型（“事件类型不带on”）
+  >
+  > 第二个参数：事件处理函数（匿名函数和命名函数）
+  >
+  > 第三个参数：false---记住事false---会涉及到后面的冒泡和捕获
+
+```html
+<input type="button" value="第二种事件方式" id="count">
+```
+
+```js
+wyf$("count").addEventListener("click", function() {
+     console.log("傻仔");
+}, false);
+wyf$("count").addEventListener("click", function() {
+     console.log("好啊");
+}, false);
+```
+
+### 第三种（也支持多个function事件反应）
+
+- 对象.attachEvent("事件类型",事件处理函数)---只支持IE等地版本
+
+  > 第一个参数：事件类型（“事件类型带on”）
+  >
+  > 第二个参数：事件处理函数（匿名函数和命名函数）
+
+```html
+<input type="button" value="第二种事件方式" id="count">
+```
+
+```js
+wyf$("count").attachEvent("onclick", function() {
+     console.log("傻仔");
+});
+```
+
+## 解除事件（解绑）
+
+### 第一种
+
+- 事件.onclick = null;
+
+```html
+<input type="button" value="绑定事件" id="bt1">
+<input type="button" value="解绑事件" id="bt2">
+```
+
+```js
+wyf$("bt1").onclick = function() {
+     console.log("绑定事件");
+}
+wyf$("bt2").onclick = function() {
+     wyf$("bt2").onclick = null;//绑定事件就不起作用了
+}
+```
+
+### 第二种
+
+- 事件.removeEventListener("click",命名函数,false)
+
+```html
+<input type="button" value="绑定事件" id="bt3">
+<input type="button" value="解绑事件" id="bt4">
+```
+
+```js
+wyf$("bt3").addEventListener("click", f3, false);
+wyf$("bt3").addEventListener("click", f4, false);
+wyf$("bt4").addEventListener("click", function() {
+     wyf$("bt3").removeEventListener("click", f3, false);//解除事件3，点击bt3只能实现事件4
+})
+```
+
+### 第三种
+
+- 事件.detachEvent("onclick",命名函数);
+
+```html
+<input type="button" value="绑定事件" id="bt5">
+<input type="button" value="解绑事件" id="bt6">
+```
+
+```js
+wyf$("bt5").attachEvent("click", f5, false);
+wyf$("bt5").attachEvent("click", f6, false);
+wyf$("bt6").onclick = function() {
+     wyf$("bt5").removeEventListener("click", f6, false);//解除事件5，点击bt5只能实现事件6
+}
+```
+
+###  冒泡事件，即点击里面小的div外面的也作出反应
+
+- 修复这个bug的方法
+
+  > 谷歌和火狐：e.stopPropagation();
+  >
+  > IE：window.event.cancelBubble = true;
+
+```html
+<div id="dv1">
+     <div id="dv2">
+          <div id="dv3"></div>
+     </div>
+</div>
+```
+
+```js
+document.body.onclick = function() {
+     console.log("body");//body
+}
+wyf$("dv1").onclick = function() {
+     console.log("粉红色框");//粉红色框 body
+}
+wyf$("dv2").onclick = function() {
+     console.log("蓝色框");//蓝色框 粉红色框 body
+}
+wyf$("dv3").onclick = function(e) {//事件对象event，默认写e
+     console.log("黑灰色框");//黑灰色框
+     //谷歌和火狐
+     e.stopPropagation();
+     //IE
+     window.event.cancelBubble = true;
+}
+```
+
+### 事件冒泡（事件委托，儿子可以委托爸爸爷爷去做，让上级做）不需要for循环tagname一个一个找了，获取所有子级
+
+- var target = e.target;
+
+```html
+<ul id="id">
+    <li>西施</li>
+    <li>王昭君</li>
+    <li>貂蝉</li>
+    <li>杨玉环</li>
+</ul>
+```
+
+```js
+wyf$("id").onclick = function(e) {
+    var target = e.target;//target就是任意子集
+    target.style.backgroundColor = "pink";
+}
+```
+
+### 第二种for循环
+
+- 数组.forEach(function(){},false)
+
+```css
+#dv1 {
+    width: 300px;
+    height: 300px;
+    background-color: #1abc9c;
+}
+        
+#dv2 {
+    width: 200px;
+    height: 200px;
+    background-color: #ecf0f1;
+}
+        
+#dv3 {
+    width: 100px;
+    height: 100px;
+    background-color: #e74c3c;
+}
+```
+
+```html
+<div id="dv1">
+     <div id="dv2">
+          <div id="dv3"></div>
+     </div>
+</div>
+```
+
+```js
+var dObj = [wyf$("dv1"), wyf$("dv2"), wyf$("dv3")];//获取上下几代div
+dObj.forEach(function(ele) {//for循环
+    ele.addEventListener("click", function(e) {
+        console.log(this.id);
+        e.stopPropagation();
+    }, false);
+})
+```
+
+### 事件的三个阶段，（事件捕获，目标阶段，冒泡）
+
+| 事件     | 属性                | function后面的true/false |
+| -------- | ------------------- | ------------------------ |
+| 事件捕获 | 1，从外往里         | true                     |
+| 目标阶段 | 2，执行当前点击元素 |                          |
+| 冒泡     | 3，从里到外         | false                    |
+
+- e.evenPhase获取1，2，3
+
+```css
+#dv1 {
+    width: 300px;
+    height: 300px;
+    background-color: #1abc9c;
+}
+        
+#dv2 {
+    width: 200px;
+    height: 200px;
+    background-color: #ecf0f1;
+}
+        
+#dv3 {
+    width: 100px;
+    height: 100px;
+    background-color: #e74c3c;
+}
+```
+
+```html
+<div id="dv1">
+     <div id="dv2">
+          <div id="dv3"></div>
+     </div>
+</div>
+```
+
+```js
+var dObj = [wyf$("dv1"), wyf$("dv2"), wyf$("dv3")];
+dObj.forEach(function(ele) {
+     ele.addEventListener("click", function(e) {
+          console.log(this.id + "=====" + e.eventPhase);
+     }, false);
+})
 ```
 

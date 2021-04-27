@@ -593,6 +593,7 @@ align-self: flex-start;
 给元素排队，值越小越在前面
 order: 1;
 （侧轴）两端对其，中间留白，一行内才有效果
+justify-content: center;
 justify-content: space-between;
 <img src="C:\Users\锋锋的沉默\AppData\Roaming\Typora\typora-user-images\image-20210226210406965.png" alt="image-20210226210406965" style="zoom:25%;" />
 （侧轴）两边留白，中间也留白，一行内才有效果
