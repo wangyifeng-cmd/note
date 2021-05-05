@@ -108,7 +108,7 @@ color:hsl(0,50%,50%)
 font-size:2em;
 font-size:2rem;
 
-	样式优先级的关系
+	样式优先级的关系，先后顺序
 	标签选择器 1
 	class选择器 10
 	id选择器 100
@@ -200,7 +200,7 @@ white-space:nowrap;(文字超出不慌行)
 overflow:hidden;(超出隐藏)
 text-overflow:ellipsis;(文字超出部分显示状态)
 
-	不能复制文字
+	不可复制文字
 user-selet:none;
 
 	定义为块元素

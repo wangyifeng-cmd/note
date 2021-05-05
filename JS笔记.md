@@ -151,10 +151,14 @@ console.log(num);//蓝色的10
 console.log(num.toString);//黑色的10
 ```
 
+
+
 ```js
 var nll = null;
 console.log(num.toString);//报错，无法转换
 ```
+
+
 
 ```js
 var un;//undefined
@@ -167,6 +171,8 @@ console.log(num.toString);//报错，无法转换
 var nll = null;
 console.log(String(num));//null
 ```
+
+
 
 ```js
 var un;//undefined
@@ -562,7 +568,6 @@ function da(dt) {
 }
 var dt = new Date(); //获取系统日期
 console.log(da(dt));
-
 ```
 
 ### 随机取颜色 #xxxxxx
@@ -938,6 +943,7 @@ wyf$("night").onmouseout = function() {
 
 ```js
 var bObjs = document.getElementsByTagName("input");
+var bObjsarray = Array.from(bObjs);//可以把集合转化为真正的数组，这里没用到
     for (var i = 0; i < bObjs.length; i++) {
         bObjs[i].onclick = function() { //获取每个按钮点击事件
             for (let j = 0; j < bObjs.length; j++) { //第一件事情
@@ -1574,7 +1580,7 @@ for (var i = 0; i < imgObjs.length; i++) {
 //`url("${this.src}") no-repeat top/cover`
 ```
 
-### 全选框
+### 全选框，多选框
 
 ```css
 td,
@@ -1704,7 +1710,7 @@ function 函数名(){
 }
 ```
 
-### 创建元素的作业
+### 创建元素的作业，字典
 
 ```html
 <input type="button" value="添加table" id="tt">
@@ -1875,7 +1881,7 @@ wyf$("dv3").onclick = function(e) {//事件对象event，默认写e
 }
 ```
 
-### 事件冒泡（事件委托，儿子可以委托爸爸爷爷去做，让上级做）不需要for循环tagname一个一个找了，获取所有子级
+### 事件冒泡（事件委托，儿子可以委托爸爸爷爷去做，让上级做）不需要for循环tagname一个一个找了，获取所有子级 （考试）
 
 - var target = e.target;
 
@@ -1889,7 +1895,7 @@ wyf$("dv3").onclick = function(e) {//事件对象event，默认写e
 ```
 
 ```js
-wyf$("id").onclick = function(e) {
+wyf$("id").onclick = function(e) {//叫他爸负责接受点击事件
     var target = e.target;//target就是任意子集
     target.style.backgroundColor = "pink";
 }
@@ -1929,15 +1935,15 @@ wyf$("id").onclick = function(e) {
 
 ```js
 var dObj = [wyf$("dv1"), wyf$("dv2"), wyf$("dv3")];//获取上下几代div
-dObj.forEach(function(ele) {//for循环
+dObj.forEach(function(ele) {//for循环，ele相当于i
     ele.addEventListener("click", function(e) {
         console.log(this.id);
-        e.stopPropagation();
+        e.stopPropagation();//修复冒泡行为的bug
     }, false);
 })
 ```
 
-### 事件的三个阶段，（事件捕获，目标阶段，冒泡）
+### 事件的三个阶段，（事件捕获，目标阶段，冒泡），后面前面的123
 
 | 事件     | 属性                | function后面的true/false |
 | -------- | ------------------- | ------------------------ |
@@ -1980,7 +1986,494 @@ var dObj = [wyf$("dv1"), wyf$("dv2"), wyf$("dv3")];
 dObj.forEach(function(ele) {
      ele.addEventListener("click", function(e) {
           console.log(this.id + "=====" + e.eventPhase);
-     }, false);
+     }, false);//2 3 3
+     ele.addEventListener("click", function(e) {
+          console.log(this.id + "=====" + e.eventPhase);
+     }, true);//1 1 2
 })
+```
+
+### 计时器，中间的图片划过（单位：毫秒，1000毫秒=1秒）
+
+- 设置计时器：var timeId = setInterval(fun,100);
+- 关闭计时器：clearInterval(timeId);
+
+```html
+<input type="button" value="停止计时器" id="btn">
+```
+
+```js
+var timedID = setInterval(fun, 100);//设置计时器
+wyf$("btn").addEventListener("mouseover", function() {
+    window.clearInterval(timedID);//关闭计时器
+    //clearInterval(timedID);//window可以省略
+}, false);
+wyf$("btn").addEventListener("mouseout", function() {
+    timedID = setInterval(fun, 100);//重新开启计时器
+}, false);
+function fun() {//另设一个func，可以减少开多个func
+    console.log("计时器");
+}
+```
+
+### 燥起来和停下来（抖）
+
+```html
+<input type="button" value="燥起来" id="btn1">
+<input type="button" value="停起来" id="btn2">
+<div id="ig">
+    <img src="./pic/咚1.jpg" alt="" srcset="">
+</div>
+```
+
+```js
+var zao = "";//全局变量
+wyf$("btn1").addEventListener("click", function() {
+    zao = setInterval(dong, 100);//开启计时器
+}, false);
+wyf$("btn2").addEventListener("click", function() {
+    window.clearInterval(zao);//关闭计时器
+}, false);
+function dong() {
+    var x = parseInt(Math.random() * 100 + 1);//取随机数
+    var y = parseInt(Math.random() * 100 + 1);
+    wyf$("ig").style.left = x + "px";//要加px单位
+    wyf$("ig").style.top = y + "px";
+}
+```
+
+### 连续输出时间
+
+```js
+setInterval(function() {
+     var dt = new Date();//获取时间
+     var hour = dt.getHours();
+     var min = dt.getMinutes();
+     var sec = dt.getSeconds();
+     console.log(hour + ":" + min + ":" + sec);
+}, 1000)
+```
+
+### 自动换照片，切换照片
+
+```html
+<img src="./pic/咚1.jpg" alt="" id="change">
+```
+
+```js
+function cha() {
+    var mem = parseInt(Math.random() * 11 + 1);
+    console.log(mem);
+    wyf$("change").src = "./pic/咚" + mem + ".jpg";
+}
+cha();//一开始就执行一次，要不会1000毫秒才开始第一次，上面function独立就是修复这个bug
+setInterval(cha, 1000);
+```
+
+### 逐渐平移
+
+- 获取左边的left：id.offsetLeft
+
+```html
+<input type="button" value="向右移动400px" id="go">
+<div id="run"></div>
+```
+
+```js
+wyf$("go").addEventListener("click", function() {
+     var timeId = setInterval(function() {
+          var left = wyf$("run").offsetLeft;//获取绝对定位后run的left
+          var step = 1;
+          left += step;
+          if (left <= 100) {//向右移动
+               wyf$("run").style.left = left + "px";
+          } else {//超过100停止
+               clearInterval(timeId);
+               wyf$("run").style.left = 0 + "px";
+          }
+     }, 10);
+}, false);
+```
+
+### 逐渐平移（升级版，可以回来的）
+
+```html
+<input type="button" value="向右平移400px" id="go1">
+<input type="button" value="向右平移800px" id="go2">
+<input type="button" value="向右平移0px" id="go3">
+<div id="dv"></div>
+```
+
+```js
+function amimate(element, target) {
+     clearInterval(element.timeId);//每次执行都清除定时器，以防按多次按钮加速bug
+     //把定时器名字设置为element的定时器，防止每次执行func都开一个定时器
+     element.timeId = setInterval(function() {
+          var current = element.offsetLeft;
+          //每步1px
+          var step = 1;
+          //判断现在位置和目标位置的前后关系
+          step = current < target ? step : -step;
+          current += step;
+          if (Math.abs(current - target) > Math.abs(step)) {
+               element.style.left = current + "px";//记住加px
+          } else {
+               clearInterval(element.timeId);
+               element.style.left = target + "px";
+          }
+     }, 1);
+}
+```
+
+### 箭头函数()=>{} 与function的区别
+
+#### 1.this的指向：
+
+- 使用**function**定义的函数，this的指向随着调用环境的变化而**变化的**，而**箭头函数**中的this指向是**固定不变的**，一直指向的是定义函数的环境。
+
+```js
+//使用function定义的函数中this指向是随着调用环境的变化而变化的
+function foo(){
+	console.log(this);
+}
+var obj = { aa: foo };
+foo(); //Window
+obj.aa() //obj { aa: foo }
+```
+
+```js
+//明显使用箭头函数的时候，this的指向是没有发生变化的。
+var foo = () => { console.log(this) };
+var obj = { aa:foo };
+foo(); //Window
+obj.aa(); //Window
+```
+
+#### 2.构造函数：
+
+- function是可以定义构造函数的，而箭头函数是不行的。
+
+```js
+//使用function方法定义构造函数
+function Person(name, age){
+	this.name = name;
+	this.age = age;
+}
+var lenhart =  new Person(lenhart, 25);
+console.log(lenhart); //{name: 'lenhart', age: 25}
+```
+
+```js
+//尝试使用箭头函数
+var Person = (name, age) =>{
+	this.name = name;
+	this.age = age;
+};
+var lenhart = new Person('lenhart', 25); //报错：Uncaught TypeError: Person is not a constructor
+```
+
+#### 3.变量提升
+
+- 由于js的内存机制，function的级别最高，而用箭头函数定义函数的时候，需要var(let const定义的时候更不必说)关键词，而var所定义的变量不能得到变量提升，故箭头函数一定要定义于调用之前！
+
+```js
+foo(); //123
+function foo(){
+	console.log('123');
+}
+
+arrowFn(); //Uncaught TypeError: arrowFn is not a function
+var arrowFn = () => {
+	console.log('456');
+};
+```
+
+### 轮播图（中间的图片切换）
+
+```css
+#box {
+     position: relative;
+     margin: 100px auto;
+     width: 500px;
+     height: 281px;
+     box-shadow: 0px 0px 10px 5px #353b48;
+     overflow: hidden;
+}
+
+#img {
+     position: absolute;
+}
+
+#img ul {
+     width: 20000px;
+     position: absolute;
+}
+
+#img ul li {
+     overflow: hidden;
+     float: left;
+}
+
+#img ul li img {
+     width: 500px;
+}
+
+#box ol {
+     position: absolute;
+     align-self: center;
+     right: 6px;
+     top: 90%;
+}
+
+#box ol li {
+     color: #353b48;
+     background-color: #ffffff;
+     margin-right: 4px;
+     text-align: center;
+     border-radius: 10px;
+     float: left;
+     display: block;
+     width: 20px;
+     cursor: pointer;
+     user-select: none;
+     box-shadow: 0 0 10px 1px #ffffff;
+}
+
+.current {
+     color: white !important;
+     background-color: #353b48 !important;
+}
+
+.switch {
+     font-size: 20px;
+     color: white;
+     position: absolute;
+     top: 42%;
+     width: 44px;
+     height: 44px;
+     cursor: pointer;
+     background-color: rgba(0, 0, 0, 0.63);
+     display: none;
+     align-items: center;
+     user-select: none;
+}
+
+.switch:active {
+     background-color: rgba(71, 71, 71, 0.63);
+}
+
+#left {
+     left: -16px;
+     border-top-right-radius: 22px;
+     border-bottom-right-radius: 22px;
+}
+
+#left span {
+     margin-left: 50%;
+}
+
+#right {
+     right: -16px;
+     border-top-left-radius: 22px;
+     border-bottom-left-radius: 22px;
+}
+
+#right span {
+     margin-left: 22%;
+}
+```
+
+```html
+<div id="box" class="box">
+     <div id="img">
+          <ul id="ul">
+               <li>
+                    <a href=""><img src="./pic/咚1.jpg" alt=""></a>
+               </li>
+               <li>
+                    <a href=""><img src="./pic/咚2.jpg" alt=""></a>
+               </li>
+               <li>
+                    <a href=""><img src="./pic/咚3.jpg" alt=""></a>
+               </li>
+               <li>
+                    <a href=""><img src="./pic/咚4.jpg" alt=""></a>
+               </li>
+          </ul>
+     </div>
+     <ol>
+     </ol>
+     <div id="left" class="switch">
+          <span>&lt</span>
+     </div>
+     <div id="right" class="switch">
+          <span>&gt</span>
+     </div>
+</div>
+```
+
+```js
+window.onload = function() {
+        //平移的封装函数
+    function animate(element, target) {
+        //每次执行都清除定时器，以防按多次按钮加速
+        clearInterval(element.timeId);
+        //把定时器名字设置为element的定时器，防止每次执行func都开一个定时器
+        element.timeId = setInterval(function() {
+            var current = element.offsetLeft;
+            //控制平移的快慢
+            var step = 15;
+            //判断当前位置和目标位置的关系从而决定正反方向平移
+            step = current < target ? step : -step;
+            //每一次走一步
+            current += step;
+            //正常情况的每次平移
+            if (Math.abs(current - target) > Math.abs(step)) {
+                element.style.left = current + "px";
+            } else {
+                //最后一步的平移
+                clearInterval(element.timeId);
+                element.style.left = target + "px";
+            }
+        }, 1);
+    }
+    //获取最外面的框
+    var box = wyf$("box");
+    //获取相框
+    var img = wyf$("img");
+    //获取ul
+    var ulObj = img.children[0];
+    //获取ul下的li
+    var list = ulObj.children;
+    //获取相框的宽度
+    var imgWidth = list[0].offsetWidth;
+    //获取ol
+    var olObj = box.children[1];
+    //获取ol下的li
+    var ol_li = olObj.children;
+    // 获取right和left切换图片按键
+    var swi = document.getElementsByClassName("switch");
+    //把索引作为全局变量定义
+    var index_this = 0;
+    for (var i = 0; i < list.length; i++) {
+        // 创建新元素li
+        var liObj = document.createElement("li");
+        //把li加进ol里
+        olObj.appendChild(liObj);
+        // 把第一个li设当前class
+        ol_li[0].className = "current";
+        // 给每个li设属性索引
+        liObj.setAttribute("index", i);
+        //获取索引
+        var index = liObj.getAttribute("index");
+        // 添加内容1234，为索引+1
+        liObj.innerHTML = parseInt(index) + 1;
+        // li的排他思想
+        liObj.onclick = function() {
+            for (var j = 0; j < ol_li.length; j++) {
+                // console.log(ol_li[j].className);
+                ol_li[j].removeAttribute("class");
+            }
+            this.className = "current";
+            //获取点击的li的索引，表示第几个
+            index_this = this.getAttribute("index");
+            animate(img, -index_this * imgWidth);
+        }
+    }
+    //大招，加薪，为了平移循环后面接上前面，在后面克隆上
+    ulObj.appendChild(ulObj.children[0].cloneNode(true));
+    //left按钮的点击事件
+    wyf$("left").onclick = function() {
+            // 当图片为第一个的时候点击，会向右平移并出现最后一张图片
+            if (index_this == 0) {
+                index_this = list.length - 1;
+                img.style.left = -index_this * imgWidth + "px";
+            }
+            index_this--;
+            //调用animate函数点击平移
+            animate(img, -index_this * imgWidth);
+            //下面的数字按钮用排他思想同步
+            for (let i = 0; i < ol_li.length; i++) {
+                ol_li[i].removeAttribute("class");
+            }
+            ol_li[index_this].className = "current";
+        }
+        //right按钮的点击事件
+    wyf$("right").onclick = f_right;
+    // 封装right点击事件
+    function f_right() {
+        if (index_this == list.length - 1) {
+            index_this = 0;
+            img.style.left = 0 + "px";
+        }
+        index_this++;
+        animate(img, -index_this * imgWidth);
+        if (index_this == list.length - 1) {
+            ol_li[ol_li.length - 1].removeAttribute("class");
+            ol_li[0].className = "current";
+        } else {
+            for (let i = 0; i < ol_li.length; i++) {
+                ol_li[i].removeAttribute("class");
+            }
+            ol_li[index_this].className = "current";
+        }
+    }
+    //给right设每秒点击一次事件，从而达成自动切换效果
+    var img_move = setInterval(f_right, 3500);
+    //right和left的出现和消失事件
+    wyf$("box").onmouseover = function() {
+        swi[0].style.display = "flex";
+        swi[1].style.display = "flex";
+        clearInterval(img_move);
+    }
+    wyf$("box").onmouseout = function() {
+        swi[0].style.display = "none";
+        swi[1].style.display = "none";
+        img_move = setInterval(f_right, 3500);
+    }
+}
+```
+
+### offset系列
+
+- offsetWidth
+- offsetHeight
+- offsetLeft
+- offserTop
+
+|              |              获取右边offsetLeft              |
+| :----------: | :------------------------------------------: |
+| 有定位的时候 |            自己的left值+margin值             |
+|   标准流时   | 父级的（margin+border+padding）+自己的margin |
+
+### document获取元素
+
+- document.body====获取body
+- document.title====获取title
+- document.documentElement====获取整个
+
+### 给鼠标添加跟随图片，小苍蝇
+
+- e.clientX：获取鼠标X坐标
+- e.clientY：获取鼠标Y坐标
+
+```css
+#insect {
+    position: absolute;
+    left: -100px;
+    user-select: none;
+    z-index: 1;
+}
+```
+
+```html
+<img src="./pic/蓝色苍蝇.gif" alt="" width="60" id="insect">
+```
+
+```js
+document.onmousemove = function(e) {
+     wyf$("insect").style.left = e.clientX + 15 + "px";
+     wyf$("insect").style.top = e.clientY + 15 + "px";
+}
 ```
 
