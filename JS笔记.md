@@ -28,17 +28,47 @@ w1 = w1 - w2;
 console.log(w1,w2);
 ```
 
-### 获取数据变量
+### 获取数据变量（返回字符串）
 
 ```js
-typeof num
+typeof num//推荐
 typeof (num)
 ```
 
-### 五个数据类型
+### 五个数据类型（特殊：typeof null检测到的类型市object）
+
+| 数值型（整数+小数） |  number   |
+| :-----------------: | :-------: |
+|       字符型        |  string   |
+|       布尔型        |  boolean  |
+|         空          |   null    |
+|       未定义        | undefined |
+
+### null的特殊用法
 
 ```js
-number,string,boolean,null,underfined
+定义一个变量一开始是会一个null，有些人用定时器一开始就var timeId = null;
+//工作里面总结的一句话
+null：一开始没有，以后会有
+undefined：一开始没有，以后也没有
+```
+
+### 复合数据类型（复杂数据类型，引用数据类型）（特殊：typeof function返回的市function，其他都是object）
+
+|        对象        |        Object         |
+| :----------------: | :-------------------: |
+|        函数        |       Function        |
+|        日期        |         Date          |
+|        数组        |         Array         |
+| 扩展：基本包装类型 | String,Number,Boolean |
+
+### 引用类型判断相等==，因为地址不同所以不相等
+
+```js
+var str1 = [1, 2, 3];
+var str2 = [1, 2, 3];
+console.log(str1 == str2);//false
+console.log(str1 === str2);//false
 ```
 
 ### null因为历史遗留问题，为特殊数据object
@@ -80,6 +110,23 @@ var num;
 console.log(isNaN(num));//true
 ```
 
+### 逻辑与  &&  和逻辑或  ||
+
+```js
+console.log(0 && 0);//0
+console.log(0 && 1);//0
+console.log(1 && 0);//0
+console.log(1 && 2);//2
+console.log(2 && 3);//3
+//与：如果表达式1为真，则返回表达式2的值，如果表达式2的值为假，则返回表达式1的值
+console.log(0 || 0);//0
+console.log(0 || 1);//1
+console.log(1 || 0);//1
+console.log(1 || 2);//1
+console.log(2 || 3);//2
+//或：如果表达式1为真，则返回表达式1的值，如果表达式1的值为假，则返回表达式2的值
+```
+
 ### 复制光标这行到下一行快捷键
 
 ```js
@@ -99,21 +146,20 @@ alt + shift + 向下键
 ```js
 var age1 = 10;
 var age2 = "5";
+var age3 = 5;
 console.log(age1 - age2);//5
 console.log(age1 * age2);//50
 console.log(age1 / age2);//2
 console.log(age1 % age2);//0
+console.log(age2 == age3);//true,只比较值，不比较类型
+console.log(age2 === age3);//flase,值和类型都比较
 ```
-
-
 
 ### 类型的颜色
 
 ```js
 字符串-黑色  数字和布尔-蓝色  null和undefined-黑色
 ```
-
-
 
 ### parseInt()---转换为整数，从左往右转换，如果遇到字母立马停止转换
 
@@ -422,7 +468,7 @@ fun();//window
 
 ```js
 //第一，如果是var浏览器会先提前声明 var age；只声明，不去赋值，默认的结果underfined
-//第二，变量提升，只提升等号左边的，不会提升等号后面的
+//第二，变量提升，只提升等号左边的，不会提升等号右面的
 //第三，如果是function会声明加定义，会把整个function函数提升到代码前面
 ```
 
@@ -630,7 +676,7 @@ var str5 = "我们";
 var str6 = str5.concat("wyf", "hao", "shuai");
 console.log(str6); //我们wyfhaoshuai
 
-//.indexOf("想找的字符串"，送哪里开始找)  返回想找的字符串的索引  
+//.indexOf("想找的字符串"，从哪里开始找)  返回想找的字符串的索引，获得下标
 var str10 = "不是吧你别在这里吵了";
 var index = str10.indexOf("吵", 8);
 console.log(index); //8
@@ -1685,7 +1731,7 @@ wyf$("lfnnf").onclick = function() {
 }
 ```
 
-### 第三种：createElement（创建元素）+ appendChild（把创建的元素追加到父元素里）
+### 第三种：createElement（创建元素，创建标签）+ appendChild（把创建的元素追加到父元素里，即插入标签）
 
 ```html
 <input type="button" value="嗲三种创建元素的方式" id="create">
@@ -1993,7 +2039,7 @@ dObj.forEach(function(ele) {
 })
 ```
 
-### 计时器，中间的图片划过（单位：毫秒，1000毫秒=1秒）
+### 计时器（单位：毫秒，1000毫秒=1秒）
 
 - 设置计时器：var timeId = setInterval(fun,100);
 - 关闭计时器：clearInterval(timeId);
@@ -2436,21 +2482,43 @@ window.onload = function() {
 
 ### offset系列
 
-- offsetWidth
-- offsetHeight
-- offsetLeft
+- offsetWidth：自己的宽度+border值
+- offsetHeight：自己的高度+border值
+- offsetLeft：分是否有定位
 - offserTop
 
-|              |              获取右边offsetLeft              |
+|              |                获取offsetLeft                |
 | :----------: | :------------------------------------------: |
 | 有定位的时候 |            自己的left值+margin值             |
 |   标准流时   | 父级的（margin+border+padding）+自己的margin |
+
+### scroll系列（加overflow:auto后的滚动条是占位置的）
+
+- scrollWidth：1.没有内容的时候，盒子实际的宽度。2.有内容的时候，盒子里面内容的宽度
+- scrollHeight
+- scrollTop：盒子内容鼠标滚轮向下滚动的距离
+- scrollLeft
+
+### client系列（可视区域）
+
+- clientWidth：可视区域的宽度（不包边框）
+- clientHeight：可视区域的高度（不包边框）
+- clientLeft：左边边框的宽度
+- clientTop：上面边框的宽度
+
+### div的滚动事件（div加了overflow:auto出现滚动条后，鼠标滚动的事件）
+
+```js
+wyf$("div").onscroll = function(){
+     console.log("hh");
+}
+```
 
 ### document获取元素
 
 - document.body====获取body
 - document.title====获取title
-- document.documentElement====获取整个
+- document.documentElement====获取整个html
 
 ### 给鼠标添加跟随图片，小苍蝇
 
@@ -2458,7 +2526,7 @@ window.onload = function() {
 - e.clientY：获取鼠标Y坐标
 
 ```css
-#insect {
+#fly {
     position: absolute;
     left: -100px;
     user-select: none;
@@ -2467,13 +2535,857 @@ window.onload = function() {
 ```
 
 ```html
-<img src="./pic/蓝色苍蝇.gif" alt="" width="60" id="insect">
+<img src="./pic/蓝色苍蝇.gif" alt="" width="60" id="fly">
 ```
 
 ```js
 document.onmousemove = function(e) {
-     wyf$("insect").style.left = e.clientX + 15 + "px";
-     wyf$("insect").style.top = e.clientY + 15 + "px";
+     wyf$("fly").style.left = e.clientX + 15 + "px";
+     wyf$("fly").style.top = e.clientY + 15 + "px";
 }
+```
+
+### window的操作
+
+```js
+window.closed       // window是否关闭
+window.length       // iframe个数
+window.name         // 获取和设置window的名字
+window.innerHeight  // window的高度
+window.innerWidth   // window的宽度
+window.screenX      // 鼠标距离window的左边距
+window.screenY      // 鼠标距离window的上边距
+window.location     // 获取window关于url的对象
+window.history      // 获取history对象
+window.screen       // 获取screen对象
+window.pageXOffset  // 页面向右滚动的距离
+window.pageYOffset  // 页面向下滚动的距离
+```
+
+### 创建对象
+
+```js
+var obj = {
+     name:'王译锋',
+     age:99,
+     num:1901030097
+}
+```
+
+### 获取页面向右或向下滑动的距离（的方法）
+
+```js
+function getScroll() {
+     //创建对象并返回
+     return {
+          left: window.pageYOffset || document.documentElement.scrollLeft || document.body.scrollLeft || 0,
+          top: window.pageXOffset || document.documentElement.scrollTop || document.body.scrollTop || 0
+     }
+}
+```
+
+- 调用：getScroll().top
+
+### 发生滚轮滑动事件，鼠标向下滑动
+
+- 第一种
+
+```js
+window.onmousewheel = function() {}
+```
+
+- 第二种（常用）
+
+```js
+document.onscroll = function(){}
+```
+
+### class="fixed"的例子
+
+```css
+.fixed{
+	position:fixed;
+     top: 0;
+     left: 50%;
+     /*盒子的一半宽度*/
+     margin-left:711.5px;
+}
+```
+
+### 栈内存和堆内存
+
+- 内存里面的储存方式有两种（栈内存 和 堆内存）
+- 值类型--一般用“栈内存”--用矩形表示
+- 引用类型--一般用“堆内存”--用椭圆表示
+
+### 值类型传递的是值，引用类型传递的是地址
+
+```js
+var obj1 = {
+     name:'wyf',
+     age:18,
+     sex:'男'
+}
+var obj2 = obj1;//把obj1的地址传递给obj2
+obj2.name = 'yf';//改变obj2就是改变obj1
+console.log(obj1.name);//yf
+```
+
+### 嵌套对象：对象里面还有一个对象
+
+```js
+var obj1 = {
+     sex:'男'
+}
+var obj2 = {
+     name:'wyf',
+     age:18,
+     objM:obj1
+}
+console.log(obj2.objM.sex);
+```
+
+### 访问对象的方法：点语法和中括号语法
+
+```js
+obj = {
+     name:"wyf",
+     age:23
+}
+obj.name;//点语法
+obj["name"];//中括号语法
+```
+
+### 对象的增删改查
+
+```js
+var obj = {};//创建对象
+obj.name = "wyf";
+obj.age = 23;//增
+delete obj.name;//删
+obj.name = lyq;//改
+console.log(obj.name);//查
+```
+
+### in关键字
+
+#### 判断对象中是否有这个元素 ： "属性名" in 对象名
+
+```js
+var obj = {
+     name:"lyq",
+     age:12
+}
+console.log("name" in obj);//true
+console.log("key" in obj);//false
+ 
+var a = "name";//把属性名单独放出来也可以
+console.log(a in obj);//true
+```
+
+#### 对象中的遍历
+
+```js
+var obj = {
+	name:"lyq",
+	age:12,
+	sex:"女"
+}
+for(var key in obj){
+     console.log(key,obj[key]);
+     //name lyq
+     //age 12
+     //sex 女
+}
+```
+
+#### 数组的遍历
+
+```js
+var arr = [1,2,3,4,5];
+for (var key in arr) {
+     console.log(key, arr[key]);
+}
+//0 1
+//1 2
+//2 3
+//3 4
+//4 5
+```
+
+### 数组中找出是否存在相应的元素，找数组中的字符串
+
+- 第一种 for in 循环
+
+  ```js
+  var arr = [1, 2, 3, 4, 5];
+  for (var key in arr) {
+       if (arr[key] == 3) {
+            console.log("存在");
+       }
+  }
+  ```
+
+- 第二种 indexof 找出对应的元素
+
+  ```js
+  var arr = [1, 2, 3, 4, 5];
+  if (arr.indexOf("3") != 0) {
+       console.log("存在");
+  }
+  ```
+
+- 第三种 扩展 了解即可 推荐上面两种
+
+  ```js
+  var arr = [1, 2, 3, 4, 5];
+  if (2 in arr) {
+       console.log("存在");
+  }
+  ```
+
+### 面向过程和面向对象  例子：啤酒鸭
+
+- 面向过程：凡事都是要亲历亲为，每件事的具体过程都是要知道的，注重过程。
+- 面向对象：根据需求来找对象，面向对象注重的结果。
+
+### 面向对象
+
+```js
+//创建对象
+var arr = {
+     name: "lyq",
+     age: 12,
+     sex: "女",
+     paint: function() {
+          console.log("画画");
+     },
+     eat: function() {
+          console.log("吃");
+     }
+}
+```
+
+### 面向对象，封装函数进对象的例子
+
+```html
+<p>我是傻逼</p>
+<p>我是傻逼</p>
+<p>我是傻逼</p>
+<div class="dv">你是傻逼</div>
+<div class="dv">你是傻逼</div>
+<div class="dv">你是傻逼</div>
+```
+
+```js
+$ = {
+    getElementsByClassName: function(ClassName) {
+        return document.getElementsByClassName(ClassName);
+    },
+    getElementsByTagName: function(Tagname) {
+        return document.getElementsByTagName(Tagname);
+    },
+    setStyle: function(eles, color) {
+        for (let i = 0; i < eles.length; i++) {
+            eles[i].style.backgroundColor = color;
+            eles[i].style.border = "2px solid #888";
+            eles[i].style.color = "pink";
+        }
+    }
+}
+$.setStyle($.getElementsByTagName("p"), "#123456");
+$.setStyle($.getElementsByClassName("dv"), "#654321");
+```
+
+### 异常捕捉，一般情况下出现错误代码，就不会执行下面的代码，可以利用try catch继续向下执行代码
+
+```js
+try{
+     //存放可能会出错的代码，如果有错误信息，那么会执行catch中的代码，如果没有错，就不会执行catch中的代码
+}catch(e){
+     //e 为错误信息
+}
+```
+
+- 出错例子
+
+  ```js
+  var a = 123;
+  console.log(a);
+  console.log(b);//报错
+  
+  function later() {
+       console.log("后面执行的代码");
+  }
+  later();
+  ```
+
+- 用try catch后
+
+  ```js
+  var a = 123;
+  console.log(a);
+  try {
+      console.log(b);//出错，然后执行catch中的代码
+  } catch (e) {//e表示错误的信息
+      console.log("Error Msg", e);//执行这句后，继续向下执行
+  }
+  function later() {
+      console.log("后面执行的代码");
+  }
+  later();
+  ```
+
+### 完整的try catch finally
+
+```js
+try{
+    //存放可能出错的代码
+}catch(e){
+    //throw可以手动输出错误信息
+    //throw "这是一个错误信息，小心检测一下try里面的代码有没有bug";
+    //throw "这是一个错误信息，小心检测一下try里面的代码有没有bug"+e;
+    throw{
+        errorMsg:e,//错误信息
+        errorCode:404,//错误编码，假设404错误
+    }
+}finally{
+    //加上这个才是完整的结构
+    //不管前面上面代码，都会执行这里的代码
+    //存放一些初始化代码（后端）
+    //多用于后端开发node.js，用来释放一些资源
+}
+```
+
+### delete删除关键字
+
+- 能删除对象中的属性
+- 能删除未使用var声明的变量
+- 不能删除使用var声明的变量
+- 能删除直接定义再window上面的属性
+- 总结：如果删除成功返回true，如果失败返回false
+
+```js
+word1 = "wyf";
+console.log(delete word1);//true 能删除没有用var定义的变量，因为未使用var声明的变量，会自动挂载到window上面，浏览器对象---全局的，能使用delete删除
+var word2 = "lyq";
+console.log(delete word2);//false 不能删除用var来定义的变量
+//考题
+window.word3 = "demo";
+console.log(delete demo);//true 能删除window上的属性
+```
+
+### 五个创建对象
+
+#### 1.字面量的方式创建对象
+
+```js
+var littleGirl = {
+    name: "赖以青",
+    age: 12,
+    birthday: 20090128,
+    sex: 0,
+    school: "三中",
+    major: "画画",
+    action: function() {
+        console.log(this.name + "专业是" + this.major);//用this直接调用本对象
+    }
+}
+console.log(littleGirl.name);
+console.log(littleGirl.age);
+console.log(littleGirl.sex);
+console.log(littleGirl.school);
+console.log(littleGirl.major);
+littleGirl.action();
+```
+
+#### 2.内置的构造函数创建对象
+
+```js
+var littleGirl = new Object();
+littleGirl.name = "赖以青";
+littleGirl.age = 12;
+littleGirl.birthday = 20090128;
+littleGirl.sex = 0;
+littleGirl.action = function() {
+    console.log(this.name + "专业是" + this.major);
+}
+console.log(littleGirl.name);
+console.log(littleGirl.age);
+console.log(littleGirl.birthday);
+console.log(littleGirl.sex);
+littleGirl.action();
+```
+
+#### 3.工厂模式：就是把内置对象构造函数的方式放到函数里面   缺点：找不到父类
+
+```js
+function createKid(name, age, birth, sex, school, major) {
+    var kid = new Object();
+    kid.name = name;
+    kid.age = age;
+    kid.birth = birth;
+    kid.sex = sex;
+    kid.school = school;
+    kid.major = major;
+    kid.action = function() {
+        console.log(this.name + "专业是" + this.major);
+    }
+    return kid;
+}
+var kid = createKid("赖以青", 12, 20090128, 0, "三中", "画画");
+console.log(kid);
+console.log(kid instanceof createKid);//false，工厂模式的缺点：找不到父类
+```
+
+#### 4.自定义构造函数    优点：1.完美优化代码  2.还可以找到父类，不想工厂模式一样找不到父类
+
+- instanceof  找父类，子类 instanceof 父类，找到返回true，找不到返回false
+- constructor  找父类，用点语法调用，直接返回父类函数
+
+```js
+function CreateKid(name, age, major) { //自定义构造函数
+    this.name = name;
+    this.age = age;
+    this.major = major;
+    this.action = function() {
+            console.log(this.name + "专业是" + this.major);
+        }
+        //会有默认的return this
+}
+//实例化对象
+var kid = new CreateKid("lyq", 12, "画画");
+console.log(kid);
+console.log(kid instanceof CreateKid);//true
+if (kid.constructor == CreateKid) {
+    console.log("Kid是CreateKid的孩子")
+}//Kid是CreateKid的孩子
+//工作中都是用自定义构造函数方式创建对象---优点：1.完美优化代码  2.还可以找到父类，不想工厂模式一样找不到父类
+```
+
+#### 5.Object.create()---优势：能创建一个连原型链都没有的对象，这样好处是我们查询数据更快
+
+```js
+var kid = Object.create(null);
+console.log(kid.name = "lyq");//lyq
+console.log(kid);//{name: "lyq"}
+```
+
+#### 原型：prototype
+
+- 我们工作里面，一般会把属性放在构造函数身上，方法放在原型上面，目的就是为了实现数据共享
+- console.dir(实例化后的对象);//查看原型的方法
+
+```js
+function CreateKid(name, age, major) { //自定义构造函数
+     this.name = name;
+     this.age = age;
+     this.major = major;
+     // this.action = function() {
+     //     console.log(this.name + "专业是" + this.major);
+     // }
+}
+CreateKid.prototype.action = function() {//把方法放到原型prototype上
+     console.log(this.name + "专业是" + this.major);
+}
+//实例化对象
+var kid = new CreateKid("lyq", 12, "画画");
+console.dir(Kid);//查看原型的方法
+console.log(kid);
+```
+
+### 原型
+
+老师总结的三句话：
+
+1. 每个构造函数都有一个prototype属性，指向他的原型对象
+2. 每一个实例化对象都有一个\__proto__属性，指向他所属类的原型对象
+3. 每一个原型对象都有一个constructor属性，指向构造函数本身
+
+![image-20210813204624829](C:\Users\锋锋的沉默\AppData\Roaming\Typora\typora-user-images\image-20210813204624829.png)
+
+#### 完整的原型图
+
+![image-20210816161943213](C:\Users\锋锋的沉默\AppData\Roaming\Typora\typora-user-images\image-20210816161943213.png)
+
+- 计算机直接给Object.prototype.\__proto__指向null
+
+#### 获取原型对象的方法---小心被面试到
+
+1. 构造函数.prototype
+2. 实例化对象.\__proto__
+3. Object.getPrototypeof(实例化对象)
+
+#### 出现自定义构造函数里面方法过多的情况，就把原型指向对象，把所有方法都放在一个对象里面
+
+- constructor：把原型强制指向其他的地方
+
+![image-20210814202815457](C:\Users\锋锋的沉默\AppData\Roaming\Typora\typora-user-images\image-20210814202815457.png)
+
+```js
+function CreateKid(name, age, major) { //自定义构造函数
+    this.name = name;
+    this.age = age;
+    this.major = major;
+}
+CreateKid.prototype = {
+        constructor: CreateKid,//如果把原型的指向给了一个对象{}，那千万别忘了在对象里面修改指向给自定义构造函数
+        action: function() {//第一个方法
+            console.log(this.name + "专业是" + this.major);
+        },
+        reaction: function() {//第二个方法
+            console.log("吓死我了");
+        }
+    }
+    //实例化对象
+var kid = new CreateKid("lyq", 12, "画画");
+console.log(kid.constructor); //本来应该是原型的对象的，因为改了就指向回自定义构造函数了
+```
+
+#### this的指向
+
+```js
+console.log(this); //window
+function Kid() {
+    console.log(this); //window  没有实例化之前指向window
+}
+Kid();
+var Kids = new Kid(); //Kid()  实例化对象后的this指向对象
+```
+
+到此：我们分为一下几种情况看this的走向
+
+1. 函数外部，或者说在全局作用域下面this指向window
+2. 普通函数，this指向window
+3. 用对象去调用函数，this指向对象（也就是点前面是谁this就指向谁
+
+- 在实际开发工作中：call()  和  apply()  还可以改变this指向
+
+#### 检测自定构造函数的属性和方法
+
+1. in关键字
+2. 实例化对象.hasOwnProperty("属性或方法");
+
+```js
+function CreateKid(name, age, major) { //自定义构造函数
+     this.name = name;
+     this.age = age;
+     this.major = major;
+}
+CreateKid.prototype = {
+     constructor: CreateKid, //如果把原型的指向给了一个对象{}，那千万别忘了在对象里面修改指向给自定义构造函数
+     action: function() {
+          console.log(this.name + "专业是" + this.major);
+     },
+     reaction: function() {
+          console.log("吓死我了");
+     }
+}
+//实例化对象
+var kid = new CreateKid("lyq", 12, "画画");
+console.log(kid.constructor); //本来应该是原型的对象的，因为改了就指向回自定义构造函数了
+console.log("name" in kid);//ture  
+console.log("action" in kid);//true  in语法可以检测出私有和共有两种 在原型中的属性和方法都是公有的
+console.log(kid.hasOwnProperty("name"));//true
+console.log(kid.hasOwnProperty("action"));//false  hasOwnProperty只能检测出私有的  所以不能检测出原型中公有的属性和方法
+```
+
+#### isPrototype 与 instanceOf
+
+- isPrototype ：判断某个对象是否是指定实例对象的原型对象，如果返回true，反之返回false
+
+- instanceOf：判断当前的对象是否是指定的类型
+
+```js
+function CreateKid(name, age, sex) {
+    this.name = name;
+    this.age = age;
+    this.sex = sex;
+}
+CreateKid.prototype = {
+    constructor: CreateKid,
+    action: function() {
+        console.log(this.name + "好傻");
+    }
+}
+var Kid = new CreateKid("lyq", 12, 0);
+console.log(Kid);
+console.log(CreateKid.prototype.isPrototypeOf(Kid)); //true
+console.log(Kid instanceof CreateKid); //true
+```
+
+#### 用原型修改底层方法
+
+```js
+//总结：如果我们直接改Array.prototype,如果大家都这么改，别人使用这个数组方法的时候，就降低了搜索的效率。
+function MyArray() {
+}
+MyArray.prototype = new Array();//把MyArray指向Array原型，把Array的所有方法继承到自己新建的原型中，就可以单独加自己的原型，不影响到Array原型了
+MyArray.prototype.getLength = function() {
+    return this.length;
+}
+var kid1 = new MyArray();//实例化对象
+kid1.push(1, 2, 3, 4);
+console.log(kid1.getLength());//4
+```
+
+#### 大总结：面试会问到的几句话
+
+##### 问：自定义构造函数和工厂模式非常的相似，但是还是有区别的
+
+1. 自定义的构造函数首字母要大写---规范
+2. 需要实例化对象，需要new关键字和构造函数一起创建对象
+3. 构造函数最后，会自动返回return this
+
+##### 继续扩展底层原理：自定义构造函数如何来构造函数对象
+
+1. 在函数内部会默写的创建一个空对象 var obj = new Object()
+2. 会把默认创建好的对象赋值给this  this = obj
+3. 通过this来添加属性和方法
+4. 默认会把内部创建好的对象返回return this
+
+##### 构造函数返回值问题---小心面试到
+
+- 值是可以修改的
+
+1. 如果修改的是值类型，修改无效
+2. 如果修改的是引用类型，修改有效
+
+### 回调函数---就是函数作为参数调用了---可以传递匿名函数也可调用命名函数
+
+```js
+function func(fun) {//形参为函数
+     console.log("我是调用函数的函数");
+     fun();//运行形参中的函数
+}
+
+function name() {//命名函数，也可以为匿名函数
+     console.log("我是也个命名函数");
+}
+func(name);//调用命名函数运行func函数
+```
+
+### 高阶函数
+
+```js
+function func() {
+    console.log("我是第一个函数");
+    return function() {
+        console.log("我是返回的函数");
+    }
+}
+var fun = func();
+fun();//因为返回的是函数，直接加（）执行就行
+```
+
+### 继承
+
+#### 1.混入式继承：拷贝继承（浅继承 和 深继承）
+
+```js
+var kid1 = {
+    name: "lyq",
+    age: 12,
+    sex: 0,
+    action: {
+        name: "haosha"
+    }
+};
+var kid2 = {};
+//将kid1里面的数据拷贝给kid2
+for (var key in kid1) {
+    kid2[key] = kid1[key];
+}
+kid2.action.name = "wyf";//可以单独修改继承的数据
+console.log(kid1);
+console.log(kid2);
+```
+
+#### 2.原型式继承
+
+- 跟前面的混入式继承都有一样的缺陷：存在数据共享问题
+
+  ![image-20210815111950193](C:\Users\锋锋的沉默\AppData\Roaming\Typora\typora-user-images\image-20210815111950193.png)
+
+```js
+function Kid1() {}
+Kid1.prototype.action = function() {
+    console.log("我是Kid1上的方法");
+}
+function Kid2() {}
+Kid2.prototype = Kid1.prototype; //Kid2继承Kid1的prototype
+var Kid22 = new Kid2();
+Kid22.action();
+```
+
+#### 3.原型链继承 --- 缺点：子类无法向父类传递参数 --- 后面就会引出我们的call继承，经典继承和组合继承
+
+```js
+//大人的构造函数
+function Adult(name, age, sex) {
+    this.name = name;
+    this.age = age;
+    this.sex = sex;
+}
+//大人原型上添加方法
+Adult.prototype.action = function() {
+    console.log("ADULT傻逼");
+}
+//孩子的构造函数
+function Kid(score) {
+    this.score = score;
+}
+//原型链继承
+Kid.prototype = new Adult("lyq", 12, 0);
+//孩子原型上添加方法
+Kid.prototype.study = function() {
+    console.log("KID傻逼");
+}
+//实例化对象
+var kid1 = new Kid(100);
+console.log(kid1.name, kid1.age, kid1.sex, kid1.score);
+kid1.action(); //获取Person的原型上面的方法
+kid1.study(); //自己身上的原型方法
+//实例化对象
+var kid2 = new Kid(110);
+console.log(kid2.name, kid2.age, kid2.sex, kid2.score);
+kid2.action(); //获取Person的原型上面的方法
+kid2.study(); //自己身上的原型方法
+//实例化对象
+var kid3 = new Kid(120);
+console.log(kid3.name, kid3.age, kid3.sex, kid3.score);
+kid3.action(); //获取Person的原型上面的方法
+kid3.study(); //自己身上的原型方法
+```
+
+### call() 和 apply() 方法---借用其他对象的方法
+
+- 面试官会经常问到的点
+
+  call() 和 apply() ：借用其他对象的方法，并绑定this指向
+
+- 语法：公式
+
+  第一：对象1.方法.call(对象2);---注意方法一定不能加括号（）
+
+  第二：对象1.方法.apply(对象2);---注意方法一定不能加括号（）
+
+- 特点：
+
+  我们 call() 和 apply() 不仅能借用其他对象的方法，还能改变this指向
+
+  看call(第一个参数)或者apply(第一个)
+
+```js
+var kid1 = {
+    name: "lyq",
+    age: 12,
+    action: function() {
+        console.log(this.name + "会画画");
+    }
+}
+var kid2 = {
+    name: "wyf"
+}
+kid1.action.call(kid2); //wyf会画画
+kid1.action.apply(kid2); //wyf会画画
+```
+
+- call() 和 apply() 的区别
+
+```js
+var kid1 = {
+    name: "lyq",
+    age: 12,
+    action: function() {
+        console.log(this.name + "会画画");
+    },
+    add: function(a, b) {
+        return a + b;
+    }
+}
+var kid2 = {
+    name: "wyf"
+}
+//如果不传递参数，没有区别
+//如果传递参数，call()后面的参数可以是任意的数据序列，而apply()必须是数组
+console.log(kid1.add.call(kid2, 1, 2)); //3
+console.log(kid1.add.apply(kid2, [1, 2])); //3
+```
+
+#### 4.原型链解决方法 --- 借用构造函数继承 --- call() --- 缺点：无法获取父类的方法
+
+```js
+//大人的构造函数
+function Adult(name, age, sex) {
+    this.name = name;
+    this.age = age;
+    this.sex = sex;
+}
+//大人原型上添加方法
+Adult.prototype.action = function() {
+    console.log("ADULT傻逼");
+}
+//孩子的构造函数
+function Kid(name, age, sex, score) {
+    Adult.call(this, name, age, sex);
+    //缺少对象是因为window省略
+    //完整版：window.Person.call(this);
+    this.score = score;
+}
+//孩子原型上添加方法
+Kid.prototype.study = function() {
+    console.log("KID傻逼");
+}
+//实例化对象
+var kid1 = new Kid("lyq", 12, 0, 100);
+console.log(kid1.name, kid1.age, kid1.sex, kid1.score);//lyq 12 0 100
+//实例化对象
+var kid2 = new Kid("wyf", 22, 1, 110);
+console.log(kid2.name, kid2.age, kid2.sex, kid2.score);//wyf 22 1 110
+//实例化对象
+var kid3 = new Kid("jkl", 24, 1, 120);
+console.log(kid3.name, kid3.age, kid3.sex, kid3.score);//jkl 24 1 120
+```
+
+#### 5.组合式继承法（原型链继承 + 借用构造函数继承）--- 完美的工作用的继承
+
+```js
+//大人的构造函数
+function Adult(name, age, sex) {
+    this.name = name;
+    this.age = age;
+    this.sex = sex;
+}
+//大人原型上添加方法
+Adult.prototype.action = function() {
+    console.log("ADULT傻逼");
+}
+//孩子的构造函数
+function Kid(name, age, sex, score) {
+    Adult.call(this, name, age, sex);
+    this.score = score;
+}
+//孩子原型链继承
+Kid.prototype = new Adult();
+//孩子原型上添加方法
+Kid.prototype.study = function() {
+    console.log("KID傻逼");
+}
+//实例化对象
+var kid1 = new Kid("lyq", 12, 0, 100);
+console.log(kid1.name, kid1.age, kid1.sex, kid1.score);
+kid1.action();
+kid1.study();
+//实例化对象
+var kid2 = new Kid("wyf", 22, 1, 110);
+console.log(kid2.name, kid2.age, kid2.sex, kid2.score);
+kid2.action();
+kid2.study();
+//实例化对象
+var kid3 = new Kid("jkl", 24, 1, 120);
+console.log(kid3.name, kid3.age, kid3.sex, kid3.score);
+kid3.action();
+kid3.study();
 ```
 

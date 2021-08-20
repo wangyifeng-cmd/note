@@ -42,6 +42,7 @@ a{
 src：用于<img>,<frame>,<iframe>,<script>,浏览器需要加载完毕src的内容才能继续往下走
 例：
 <img src="img/girl.jpg">
+
 <iframe src="top1.html">
 <frame src="top.html">
 <script src="show1.js">
@@ -138,6 +139,7 @@ box-sizing:border-box;
  overflow:hidden;
 }
 	
+
 	overflow
 	滚动条
 	auto:当内容超出div长度用auto自动生成滚动条
@@ -278,22 +280,31 @@ background:repeating-radial-gradient(red 0px,red 40px,blue 40px,blue 100px);
 	背景滤镜
 filter: blur(5px);（模糊）
 
-	任何元素设置浮动后会强制转换为行内块元素，就可以设置宽高了
+任何元素设置浮动后会强制转换为行内块元素，就可以设置宽高了
+
+```css
 span{
 float:left;
 }
+```
 
-	清除两边浮动
+
+### 消除两边浮动
+
+```css
 clear:both;
+```
+### 伪元素创建幽灵元素设置clear，使用浮动的时候在父级元素中添加为元素，清除浮动，目的是为了防止父级高度塌陷
 
-	伪元素创建幽灵元素设置clear，使用浮动的时候在父级元素中添加为元素，清除浮动，目的是为了父级高度塌陷
+```css
 .clearfix::after{
  content:"";
  display:block;
  clear:both;
 }
+```
+### font-weight的范围
 
-	font-weight的范围
 normal：默认值。
 bold：粗体字
 bolder：更粗的字
@@ -309,27 +320,41 @@ lighter：更细的字
 900
 inherit：从父元素继承字体的粗细
 
-	层级，z-index的值越高，就在越上面
+### 层级，z-index的值越高，就在越上面
+
+```css
 z-index:1000;
+```
 ![](http://static.zzhitong.com/lesson-files/html/img/10-2.png)
 
-	绝对定位，和float浮动的漂浮特性很像，谁在最后面谁的层级越高，参照物是离他最近的一个父级定位元素
+### 绝对定位，和float浮动的漂浮特性很像，谁在最后面谁的层级越高，参照物是离他最近的一个父级定位元素
+
+```css
 position:absolute;
+```
+### 相对定位，相对于自己的位移
 
-	相对定位，相对于自己的位移
+```css
 position:relate;
+```
+### 固定定位，是绝对定位absolute的一种，跟绝对定位的特性一摸一样，但是参照物永远是html
 
-	固定定位，是绝对定位absolute的一种，跟绝对定位的特性一摸一样，但是参照物永远是html
+```css
 position:fixed;
+```
+### 黏滞定位，在默认情况下不脱离文档流，达到限制的区间以后会脱离文档流，实现固定定位
 
-	黏滞定位，在默认情况下不脱离文档流，达到限制的区间以后会脱离文档流，实现固定定位
+```css
 position:sticky;
+```
+### a标签不想要下划线
 
-	a标签不想要下划线
+```css
 text-decoration:none;
 color:black;
+```
+### a标签的属性
 
-	a标签的属性
 href:跳转路径 （阻止默认跳转的方式：# 后者 JavaScript:;）
 target:跳转方式 （新页面打开：_blank）
 
@@ -429,13 +454,18 @@ input : focus{
  textall : "aasdjfkigdsgveij"
 }
 
-	表格
+表格
+
+```css
 table{
  border-collapse:collapse;
 }
 table td{
  width:100px;
 }
+```
+
+
 <table>
         <tr>
             <td rowspan="2">1</td>
@@ -542,7 +572,7 @@ cursor:url(./img/..),default;
 
 	变形，原位置不会脱离文档流（旋转，放大缩小，xy轴移动）
 旋转
-transfrom: rotate(1.2turn);
+transform: rotate(1.2turn);
 平移
 transform: translate(100px,0);
 缩放
@@ -618,17 +648,31 @@ align-content: space-between;
 </main>
 <footer>底部</footer>
 
-	视频
+### 视频
+
+```css
 <video controls(加上才可以播放) muted(静音) autoplay(自动播放，大部分浏览器不支持) loop(循环播放) poster=""(换封面图片) src=""></video>
+```
 
-	音乐
+### 音乐
+
+```html
 <audio  src=""></audio>
+```
+### 小网页，网页中的网页，可以放其他的，如视频
 
-	小网页，网页中的网页，可以放其他的，如视频
+```html
 <iframe src="" frameborder="0"></iframe>
-可以和a元素配合
+```
+
+### 可以和a元素配合
+
+```html
 <a href="baidu.com" target="wyf"></a>
 <iframe src="" name="wyf"></iframe>
+```
+
+
 
 	代码书写规范
 1.content: ""
@@ -637,8 +681,128 @@ align-content: space-between;
 4.文字样式 font-size text-align
 5.视觉效果 bgc color
 
+
+
 # 备注
 
-### 问题一：添加      font-size: 0;     后，后面的文字消失
+### 问题：添加      font-size: 0;     后，后面的文字消失
 
 > 答：需要重新设置font-size: 16px;
+
+### 给input的默认值加颜色
+
+```css
+input::-webkit-input-placeholder {
+    /* WebKit browsers */
+    color: #CDCBCE;
+}
+
+input:-moz-placeholder {
+    /* Mozilla Firefox 4 to 18 */
+    color: #CDCBCE;
+}
+
+input::-moz-placeholder {
+    /* Mozilla Firefox 19+ */
+    color: #CDCBCE;
+}
+
+input:-ms-input-placeholder {
+    /* Internet Explorer 10+ */
+    color: #CDCBCE;
+}
+```
+
+### span底部对齐
+
+```css
+vertical-align: middle;/*span中加入*/
+```
+
+### 两个大div，需要一个固定宽度，一个自动伸缩
+
+```css
+height: calc(100% - 50px);/*50px为固定div的宽度
+```
+
+### 文字从上往下，竖向排布
+
+```css
+writing-mode: tb-rl;/*字向下排布*/
+writing-mode:vertical-lr;/*字头向上,竖着排,下一行为右边*/
+writing-mode:sideways-rl;/*字头向右,竖着排,下一行为左边*/
+```
+
+### 让盒子加padding时不会增加高度宽度
+
+```css
+box-sizing: border-box;
+```
+
+### 两个span字体以垂直方向的中心对齐
+
+```css
+vertical-align: middle;
+```
+
+### 字母和字母间隔
+
+```css
+letter-spacing: 1px;
+```
+
+### 垂直居中
+
+```css
+display: flex;
+align-items: center;/*垂直*/
+justify-content: space-around;/*水平*/
+```
+
+### 字体颜色混合
+
+> 1.mix-blend-mode混合模式的元素可以和该元素下方的元素实现混合效果
+> 2.mix-blend-mode混合模式的元素只能和正下方的第一层元素实现混合效果(此处第一层指的是下方的层叠区域)
+> 3.如果想实现下方多层混合，下方的元素也需要使用mix-blend-mode混合模式.
+> 4.使用mix-blend-mode混合模式的元素不能和html,body标签的背景图或者背景色产生混合效果
+
+```css
+mix-blend-mode: normal;         // 正常
+mix-blend-mode: multiply;       // 正片叠底
+mix-blend-mode: screen;         // 滤色
+mix-blend-mode: overlay;        // 叠加
+mix-blend-mode: darken;         // 变暗
+mix-blend-mode: lighten;        // 变亮
+mix-blend-mode: color-dodge;    // 颜色减淡
+mix-blend-mode: color-burn;     // 颜色加深
+mix-blend-mode: hard-light;     // 强光
+mix-blend-mode: soft-light;     // 柔光
+mix-blend-mode: difference;     // 差值
+mix-blend-mode: exclusion;      // 排除
+mix-blend-mode: hue;            // 色相
+mix-blend-mode: saturation;     // 饱和度
+mix-blend-mode: color;          // 颜色
+mix-blend-mode: luminosity;     // 亮度
+```
+
+### 文字斜体
+
+```css
+font-style: italic;
+```
+
+### border边框的虚线
+
+```css
+border-style:dotted;/*点状*/
+border-style:solid; /*实线*/
+border-style:double;/*双线*/
+border-style:dashed;/*虚线*/
+```
+
+### 加下划线，字下面的线
+
+```css
+text-decoration: underline;
+```
+
