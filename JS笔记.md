@@ -616,6 +616,24 @@ var dt = new Date(); //获取系统日期
 console.log(da(dt));
 ```
 
+- 封装一个获取时间的方法
+
+  ```js
+  function getTime() {
+       var d = new Date();
+       var vYear = d.getFullYear()
+       var vMon = d.getMonth() + 1
+       var vDay = d.getDate();
+       var h = d.getHours();
+       var m = d.getMinutes();
+       var se = d.getSeconds();
+       s = vYear + "/" + (vMon < 10 ? "0" + vMon : vMon) + "/" + (vDay < 10 ? "0" + vDay : vDay) + " " + (h < 10 ? "0" + h : h) + ":" + (m < 10 ? "0" + m : m) + ":" + (se < 10 ? "0" + se : se);
+       return s;
+  }
+  ```
+
+  
+
 ### 随机取颜色 #xxxxxx
 
 ```js
@@ -676,7 +694,7 @@ var str5 = "我们";
 var str6 = str5.concat("wyf", "hao", "shuai");
 console.log(str6); //我们wyfhaoshuai
 
-//.indexOf("想找的字符串"，从哪里开始找)  返回想找的字符串的索引，获得下标
+//.indexOf("想找的字符串"，从哪里开始找)  返回想找的字符串的索引，获得下标,如果没找到就返回-1
 var str10 = "不是吧你别在这里吵了";
 var index = str10.indexOf("吵", 8);
 console.log(index); //8
@@ -698,6 +716,7 @@ var str15 = str13.slice(4); //把剩下的所有都提取
 console.log(str14);
 
 //.splice(n,m,x,y,z)  把数组从索引n开始删除m个元素，用x,y,z代替删除的m项，返回值是被删的数组，原来的数组已经改变(备注：增删改除)
+//.splice(当前的索引值,元素个数,新的元素)
 var str22 = [1, 2, 3, 4, 5, 6];
 var str23 = str22.splice(2, 2, 7, 8, 9);
 console.log(str23);//3,4
@@ -998,6 +1017,109 @@ var bObjsarray = Array.from(bObjs);//可以把集合转化为真正的数组，�
             this.value = "菜啊"; //第二件事情，把自己变单独的值
         }
     }
+```
+
+### 排他思想例子：选项卡
+
+```html
+<input class="button" id="but1" type="button" value="1">
+<input class="button" id="but2" type="button" value="2">
+<input class="button" id="but3" type="button" value="3">
+<div id="box">
+     <div class="box_box" id="box3">
+          <div>3</div>
+     </div>
+     <div class="box_box" id="box2">
+          <div>2</div>
+     </div>
+     <div class="box_box" id="box1">
+          <div>1</div>
+     </div>
+</div>
+```
+
+```css
+#box {
+    position: relative;
+    width: 400px;
+    height: 200px;
+    background-color: rgb(255, 245, 106);
+}
+
+.button {
+    font-size: 20px;
+    cursor: pointer;
+    background-color: rgb(255, 255, 255);
+    border: 1px solid #b1b1b1;
+    width: 70px;
+    height: 30px;
+    border-radius: 3px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    -ms-border-radius: 3px;
+    -o-border-radius: 3px;
+}
+
+#but1 {
+    color: #fff;
+    background-color: #535353;
+}
+
+.box_box {
+    color: #fff;
+    font-size: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+
+#box1 {
+    background-color: rgb(66, 164, 255);
+}
+
+#box2 {
+    background-color: rgb(255, 68, 68);
+}
+
+#box3 {
+    background-color: rgb(66, 255, 82);
+}
+```
+
+```js
+// 获取按钮的集合
+var butObjs = document.getElementsByClassName("button");
+// 获取下面色块的集合
+var box_ele = document.getElementsByClassName("box_box");
+// 把色块的集合转化为数组
+var box = Array.from(box_ele);
+// 把数组倒换过来，因为html中div1，2，3这样排序会让3放在最上面
+var boxObjs = box.reverse();
+// 排他思想改变按钮和色块的变化
+for (let i = 0; i < butObjs.length; i++) {
+    // 获取点击的下标
+    butObjs[i].index = i;
+    //过去点击按钮的事件
+    butObjs[i].onclick = function() {
+        // 先把所有按钮统一样式
+        for (let j = 0; j < butObjs.length; j++) {
+            butObjs[j].style.backgroundColor = "#ffffff";
+            butObjs[j].style.color = "#535353";
+        }
+        // 把点击的按钮单独改变样式
+        this.style.backgroundColor = "#535353";
+        this.style.color = "#ffffff";
+        // 先把所有色块统一样式
+        for (let j = 0; j < boxObjs.length; j++) {
+            boxObjs[j].style.display = "none";
+        }
+        // 把点击对应的色块单独改变样式
+        boxObjs[this.index].style.display = "flex";
+    }
+}
 ```
 
 ### 改变性别，用checked为true判定
@@ -2836,7 +2958,7 @@ try{
   later();
   ```
 
-### 完整的try catch finally
+### 完整的try catch finally --- 防止出错
 
 ```js
 try{
@@ -2990,8 +3112,8 @@ CreateKid.prototype.action = function() {//把方法放到原型prototype上
 }
 //实例化对象
 var kid = new CreateKid("lyq", 12, "画画");
-console.dir(Kid);//查看原型的方法
-console.log(kid);
+console.dir(Kid);//CreateKid --- 查看原型的方法
+console.log(kid);//CreateKid {name: "lyq", age: 12, major: "画画"}
 ```
 
 ### 原型
@@ -3363,11 +3485,11 @@ Adult.prototype.action = function() {
 }
 //孩子的构造函数
 function Kid(name, age, sex, score) {
-    Adult.call(this, name, age, sex);
+    Adult.call(this, name, age, sex);////////////////////////////////
     this.score = score;
 }
 //孩子原型链继承
-Kid.prototype = new Adult();
+Kid.prototype = new Adult();/////////////////////////////////////////
 //孩子原型上添加方法
 Kid.prototype.study = function() {
     console.log("KID傻逼");
@@ -3387,5 +3509,785 @@ var kid3 = new Kid("jkl", 24, 1, 120);
 console.log(kid3.name, kid3.age, kid3.sex, kid3.score);
 kid3.action();
 kid3.study();
+```
+
+### 测试底层
+
+```js
+function Kid(name, age, sex) {
+    this.name = name;
+    this.age = age;
+    this.sex = sex;
+}
+Kid.prototype = {
+    action: function() {
+        console.log("lyq");
+    }
+}
+var kid1 = new Kid();
+console.log(kid1.constructor);
+// 测试所有函数都是Function实例化（所有对象都是Object实例化）
+console.log(Kid.constructor); //Function() { [native code] }
+console.log(Kid.__proto__); // () --- 空函数
+console.log(Function.prototype); // () ---空函数
+//测试Functiond的父类 Function是上帝 --- 自己造自己
+console.log(Function.constructor);//Function() { [native code] }
+```
+
+![image-20210821123136770](C:\Users\锋锋的沉默\AppData\Roaming\Typora\typora-user-images\image-20210821123136770.png)
+
+### json格式的数据处理 --- ()圆括号语法
+
+```js
+//工作里面真正给我们模拟的数据大多数都是json格式的数据
+//json格式的数据跟对象是一样的，就一点区别
+//1.html：var Obj = {name:"lyq",age:12}
+//2.json：var json = {"name":"lyq","age":12}
+//总结：我们拿到json数据要转换成真正的对象来操作 --- ()圆括号语法
+Number.prototype.add = function(num) {
+    return this + num;
+}
+var num = 100;
+var result = num.add(100);
+console.log(result);
+// console.log(100. add(100)); //报错
+console.log((100).add(100)); //200
+//json格式的对象也可以用()圆括号语法拿到数据
+var kid = ({
+    "name": "lyq",
+    "age": 12
+})
+console.log(kid); //{name: "lyq", age: 12}
+//总结：我们以后工作里面，拿到json数据第一件事就是()圆括号方法
+```
+
+### Object静态属性
+
+> <u>1.Object.length：长度 形参的个数</u>
+>
+> <u>2.Object.name：方法的名字</u>
+>
+> <u>3.Object.assign()：将多个对象合并到一个对象中，并返回 --- 这也是创建对象的一种方式</u>
+>
+> <u>4.Object.create() 创建对象 --- 特点：创建没有原型链的对象</u>
+>
+> <u>5.Object.is()：判断两个参数是否相等  等同于 === 注意一下下面两个特殊情况</u>
+>
+> 6.Object.getOwnPropertyDescriptor()：获取对象指定的属性的描述对象
+>
+> 7.Object.getOwnPropertyDescriptors()：获取所有属性的描述对象
+>
+> <u>8.*Object*.defineProperty()：修改对象指定的属性的描述对象</u>
+>
+> <u>9.*Object*.defineProperties()：修改所有的属性的描述对象</u>
+>
+> 10.*Object*.keys()：获取除了不可枚举的属性外的所有属性的名称
+>
+> 11.*Object*.getOwnPropertyNames()：获取当前对象所有属性的名称，包括不可枚举的的属性
+>
+> 12.*Object*.isExtensible()：检查是否可扩展
+>
+> 13.*Object*.preventExtensions()：阻止扩展，但是可以删除,修改
+>
+> 14.*Object*.isSealed()：检查是否被密封，密封即不能添加和删除属性
+>
+> 15.*Object*.seal：密封当前对象，不可以添加和删除，但是可以修改
+>
+> 16.*Object*.isFrozen()：检查是否被冻结，冻结即不能添加，也不能删除
+>
+> 17.*Object*.freeze()：冻结对象，不可删除，添加，删除
+>
+> <u>18.*Object*.entries()：获取对象，以一对一数组的形式返回</u>
+
+- Object.length：长度 形参的个数
+- Object.name：方法的名字
+
+- Object.assign()：将多个对象合并到一个对象中，并返回 --- 这也是创建对象的一种方式
+
+```js
+var kid = {
+    name: "lyq",
+    age: 12,
+}
+console.log(Object.assign(kid, { info: "信息" }, { action: "画画" }), { name: "wyf" });
+```
+
+- Object.create() 创建对象 --- 特点：创建没有原型链的对象
+
+```js
+var kid = Object.create(null);
+console.log(kid.name = "lyq");//lyq
+console.log(kid);//{name: "lyq"}
+```
+
+- Object.is()：判断两个参数是否相等  等同于 === 注意一下下面两个特殊情况
+
+```js
+//0 和 -0 比较
+console.log(0 === -0);//true
+console.log(Object.is(0, -0));//false
+//NaN 和NaN 比较
+console.log(NaN === NaN);//false
+console.log(Object.is(NaN, NaN));//true
+```
+
+- Object.getOwnPropertyDescriptor()：获取对象指定的属性的描述对象
+
+```js
+var kid = {
+    name: "lyq",
+    age: 12
+}
+console.log(Object.getOwnPropertyDescriptor(kid, "name"));
+//configurable: true 属性可配置型    false：当前属性不能被删除的   默认：true
+//enumerable: true 可枚举   默认：ture   可以循环，遍历   如果是false就是不能被遍历循环
+//value: "lyq" 当前属性的值
+//writable: true 可写型   默认：true  是可以修改和添加   如果设置为false不能被修改了
+```
+
+- Object.getOwnPropertyDescriptors()：获取所有属性的描述对象
+
+```js
+var kid = {
+    name: "lyq",
+    age: 12,
+    sex:0
+}
+console.log(Object.getOwnPropertyDescriptors(kid));
+//age: {value: 12, writable: true, enumerable: true, configurable: true}
+//name: {value: "lyq", writable: true, enumerable: true, configurable: true}
+//sex: {value: 0, writable: true, enumerable: true, configurable: true}
+```
+
+- *Object*.defineProperty()：修改对象指定的属性的描述对象
+
+```js
+var kid = {
+    name: "lyq",
+    age: 12,
+    sex: 0
+}
+Object.defineProperty(kid, "name", {
+    configurable: false//修改为不可删除
+})
+console.log(delete kid.name);//false --- 删除失败
+```
+
+- *Object*.defineProperties()：修改所有的属性的描述对象
+
+```js
+var kid = {
+    name: "lyq",
+    age: 12,
+    sex: 0
+}
+Object.defineProperties(kid, {
+    name: {
+        configurable: false,//修改为不可删除
+        writable: false//修改为不可修改内容
+    }
+})
+console.log(delete kid.name);//false --- 无法删除名字
+kid.name = "wyf";//修改名字的内容
+console.log(kid.name);//"lyq" --- 无法修改名字的内容
+```
+
+- *Object*.keys()：获取除了不可枚举的属性外的所有属性的名称
+
+```js
+var kid = {
+    name: "lyq",
+    age: 12,
+    sex: 0
+}
+Object.defineProperties(kid, {
+    name: {
+        enumerable: false //把name属性修改为不可枚举类型（即不可循环，遍历）
+    }
+})
+console.log(Object.keys(kid));//["age", "sex"] --- 因为name是不可枚举类型，所以没有输出
+```
+
+- *Object*.getOwnPropertyNames()：获取当前对象所有属性的名称，包括不可枚举的的属性
+
+```js
+var kid = {
+    name: "lyq",
+    age: 12,
+    sex: 0
+}
+console.log(Object.getOwnPropertyNames(kid));//["name", "age", "sex"]
+```
+
+- *Object*.isExtensible()：检查是否可扩展
+
+```js
+var kid = {
+    name: "lyq",
+    age: 12,
+    sex: 0
+}
+console.log(Object.isExtensible(kid));//true
+```
+
+- *Object*.preventExtensions()：阻止扩展，但是可以删除,修改
+
+```js
+var kid = {
+    name: "lyq",
+    age: 12,
+    sex: 0
+}
+console.log(Object.preventExtensions(kid));
+```
+
+- *Object*.isSealed()：检查是否被密封，密封即不能添加和删除属性
+
+```js
+var kid = {
+    name: "lyq",
+    age: 12,
+    sex: 0
+}
+console.log(Object.isSealed(kid));//false
+```
+
+- *Object*.seal：密封当前对象，不可以添加和删除，但是可以修改
+
+```js
+var kid = {
+    name: "lyq",
+    age: 12,
+    sex: 0
+}
+Object.seal(kid);//密封kid
+```
+
+- *Object*.isFrozen()：检查是否被冻结，冻结即不能添加，也不能删除
+
+```js
+var kid = {
+    name: "lyq",
+    age: 12,
+    sex: 0
+}
+console.log(Object.isFrozen(kid));//false
+```
+
+- *Object*.freeze()：冻结对象，不可删除，添加，删除
+
+```js
+var kid = {
+    name: "lyq",
+    age: 12,
+    sex: 0
+}
+Object.freeze(kid);
+```
+
+- *Object*.entries()：获取对象，以一对一数组的形式返回
+
+```js
+var kid = {
+    name: "lyq",
+    age: 12,
+    sex: 0
+}
+console.log(Object.entries(kid));
+//["name", "lyq"]
+//["age", 12]
+//["sex", 0]
+```
+
+
+
+### 创建函数 --- 函数没有返回值，默认返回undefined
+
+- 创建函数方式一
+
+  ```js
+  function kid() {
+      console.log("你是不是傻逼");
+  }
+  kid();//你是不是傻逼
+  ```
+
+- 创建函数方式二
+
+  ```js
+  var kid = function() {
+      console.log("你是傻逼吗");
+  }
+  kid();//你是傻逼吗
+  ```
+
+- 创建函数方式三 --- new方式
+
+  ```js
+  var kid = new Function("console.log('你为什么不是傻逼')");
+  kid();//你为什么不是傻逼
+  ```
+
+  ```js
+  var kid = new Function("a,b", "console.log(a + b)");
+  kid(1, 2);//3
+  ```
+
+
+
+
+### Object原型成员和方法 --- 即Object.prototype
+
+- constructor()：找父类 --- 获取创建的当前实例对象的构造函数
+
+- isOwnProperty()：判断当前实例对象是否存在指定的“公有”属性 --- in可以检测“公有” 和 “私有” 属性
+
+  ```js
+  function Kid(name, age) {
+      this.name = name;
+      this.age = age;
+  }
+  var kid = new Kid();
+  console.log(kid.hasOwnProperty("name")); //true
+  ```
+
+- isPrototypeOf()：判断当前对象是否正在指定对象的原型链中 
+
+  ```js
+  function Kid(name, age) {
+      this.name = name;
+      this.age = age;
+  }
+  var kid = new Kid("lyq",12);
+  console.log(Kid.prototype.isPrototypeOf(kid)); //true
+  console.log(Object.prototype.isPrototypeOf(kid)); //true
+  console.log(Array.prototype.isPrototypeOf(kid)); //true
+  ```
+
+- propertyIsEnumerable()：判断属性是否为枚举类型
+
+  ```js
+  function Kid(name, age) {
+      this.name = name;
+      this.age = age;
+  }
+  var kid = new Kid("lyq", 12);
+  console.log(kid.propertyIsEnumerable("name"));//true
+  ```
+
+- valueOf()
+
+  > 基本包装类型：返回对应的值
+  >
+  > 引用类型：返回对象本身
+  >
+  > 日期类型：返回的是时间戳
+
+  ```js
+  var str = new String("lyq");
+  console.log(str.valueOf()); //lyq -- 基本包装类型
+  var obj = {
+      name: "lyq",
+      age: 12
+  }
+  console.log(obj.valueOf()); //{name: "lyq", age: 12} -- 引用类型
+  var date = new Date();
+  console.log(date.valueOf()); //1629791813589 -- 日期类型
+  ```
+
+- tostring()：返回数据格式字符串
+
+  > 基本类型：返回对应值的字符串
+  >
+  > 数字类型：可以传递一个参数，指定转换为上面进制的数字字符串，二进制，八进制，十六进制
+  >
+  > 引用类型：返回[object Object]格式的字符串，object是对象的类型，Object为对象的构造函数
+
+  ```js
+  function Kid(name, age) {
+      this.name = name;
+      this.age = age;
+  }
+  var kid = new Kid("lyq", 12);
+  console.log("demo".toString()); //demo -- 基本类型
+  console.log((100).toString()); //100 -- 数字类型
+  console.log((100).toString(2)); //1100100 -- 数字类型（二进制）
+  console.log((100).toString(16)); //64 -- 数字类型（十六进制）
+  console.log(kid.toString()); //[object Object] -- 引用类型
+  ```
+
+  ##### Object.prototype.toString.call(arr) --- 数组借用对象的toString方法
+
+  ```js
+  //面试官来了
+  function Kid(name, age) {
+       this.name = name;
+       this.age = age;
+  }
+  var kid = new Kid("lyq", 12);
+  var arr = [1, 2, "a"];
+  console.log(arr.toString()); //1,2,a -- 发现引用类型arr返回的不是[object Array]
+  console.dir(arr); //发现Array的原型链中也有toString()方法
+  console.log(Object.prototype.toString() == Array.prototype.toString()); //false -- 对象和数组的toString方法是不一样的
+  console.log(Object.prototype.toString.call(arr));//[object Array] -- arr借用Object的toString方法就可以了
+  ```
+
+  ##### 上面数组借用对象的toString方法引出：Array.isArray()方法是用来判断对象是否是数组类型，因为ES5存在的不兼容的问题，为了所有浏览器兼容封装一个函数
+
+  ```js
+  function isArray(arr) {
+       if (arr.isArray) {
+            return Array.isArray(arr);
+       } else {
+            return Object.prototype.toString.call(arr) == "[object Array]";
+       }
+  }
+  console.log(isArray({})); //false --- 对象
+  console.log(isArray([1, 2, 3, 4]));//true --- 数组
+  ```
+
+- toLocaleString()：将日期转换为通俗易懂的数据
+
+  ```js
+  var date = new Date();+
+  console.log(date.toLocaleString());//2021/8/24 下午6:05:45
+  ```
+
+
+
+
+### 扩展：eval() --- 和function一样，他们的共同点都是把字符串转换为js代码
+
+```js
+var jsonStr = '({"name":"lyq","age":"12"})';
+console.log(jsonStr);
+console.log(eval(jsonStr)); //eval()可以把json数据转换为真正的对象格式的数据
+console.log("1+3");
+console.log(eval("1+3"));
+```
+
+
+
+### 扩展ES6的语法：构造函数
+
+```js
+class CreateKid {//有人把ES6的写法叫做语法糖
+    //属性
+    constructor(name, age) {
+        this.name = name;
+        this.age = age;
+    }
+    //构造函数上的方法，一般工作上不会用到，只要知道
+    static action1() {
+        console.log("我是在构造函数上的方法");
+    }
+    //原型链上的方法
+    action2() {
+        console.log("我是在原型链上的方法");
+    }
+}
+//该怎么调用就怎么调用
+var kid = new CreateKid("lyq", 12);
+console.log(kid);
+console.log(kid.name);
+console.log(kid.age);
+CreateKid.action1();//如果是构造函数上的方法要用构造函数名来调用
+kid.action2();//原型链上的按正常调用
+```
+
+### ES6：构造函数的继承
+
+```js
+class Kid {
+    constructor(name, age) {
+        this.name = name;
+        this.age = age;
+    }
+    eat() {
+        console.log("吃饭饭");
+    }
+}
+//继承 extends
+class Adult extends Kid {//表示Adult继承了Kid
+    constructor(name, age, sex) {
+        super(name, age);//表示子类向父类传递参数
+        this.sex = sex;
+    }
+    sleep() {
+        console.log("睡觉觉");
+    }
+}
+//实例化对象
+var adult = new Adult("lyq", 12, 0);
+console.log(adult);//Adult {name: "lyq", age: 12, sex: 0}
+console.log(adult.name);//lyq
+console.log(adult.age);//12
+console.log(adult.sex);//0
+adult.eat();//吃饭饭
+adult.sleep();//睡觉觉
+```
+
+### 扩展一个作用域安全问题
+
+- 问题
+
+```js
+function Kid(name, age) {
+    this.name = name;
+    this.age = age;
+}
+var kid = Kid("wyf", 22); //头昏眼花忘记写new了
+console.log(kid); //undefined -- 出错
+```
+
+- 第一种方法解决（不够完美）
+
+```js
+function Kid(name, age) {
+    if (this == window) {
+        throw "请检查一边，你下面的代码没写new，如果忘了，记得加上，免得加班"//警示没加new
+        return new Kid();//防止影响其他代码
+    } else {
+        this.name = name;
+        this.age = age;
+    }
+}
+var kid = Kid("wyf", 22); //头昏眼花忘记写new了
+console.log(kid);
+```
+
+- 第二种方法解决
+
+```js
+function Kid(name, age) {
+     if (!(this instanceof Kid)) {//更完美了
+          // throw "请检查一边，你下面的代码没写new，如果忘了，记得加上，免得加班" //警示没加new
+          return new Kid(); //防止影响其他代码
+     } else {
+          this.name = name; 
+          this.age = age;
+     }
+}
+var kid = Kid("wyf", 22); //头昏眼花忘记写new了
+console.log(kid);
+```
+
+- 第三种方法 --- 在ES6里面提供一个方法new.target == undefined，就表示没有new
+
+```js
+function Kid(name, age) {
+     if (new.target == undefined) {//更加超级完美了
+          // throw "请检查一边，你下面的代码没写new，如果忘了，记得加上，免得加班" //警示没加new
+          return new Kid(); //防止影响其他代码
+     } else {
+          this.name = name;
+          this.age = age;
+     }
+}
+var kid = Kid("wyf", 22); //头昏眼花忘记写new了
+console.log(kid);
+```
+
+- 第四种方法 --- 第三种的缩写 undefined取反，就是true
+
+```js
+function Kid(name, age) {
+     if (!(new.target)) {//最完美的
+          // throw "请检查一边，你下面的代码没写new，如果忘了，记得加上，免得加班" //警示没加new
+          return new Kid(); //防止影响其他代码
+     } else {
+          this.name = name;
+          this.age = age;
+     }
+}
+var kid = Kid("wyf", 22); //头昏眼花忘记写new了
+console.log(kid);
+```
+
+### 混入式继承中的  “浅拷贝” 和 “深拷贝”
+
+- 浅拷贝 --- 数据共存缺陷：被继承的对象中的对象和继承的对象的对象是同一个地址，所以改变这个，另外一个也会随之改变
+
+![image-20210826200230435](C:\Users\nnf\AppData\Roaming\Typora\typora-user-images\image-20210826200230435.png)
+
+```js
+var kid = {
+    name: "lyq",
+    age: 12,
+    like: {
+        name: "wyf",
+        age: 22,
+    }
+}
+var adult = {};
+for (var key in kid) {
+    adult[key] = kid[key];
+}
+console.log(adult);
+adult.like.name = "shabi";
+console.log(kid);//kid中like对象的name也会随着adult改变而改变
+```
+
+- 深拷贝
+
+![image-20210827104330661](C:\Users\nnf\AppData\Roaming\Typora\typora-user-images\image-20210827104330661.png)
+
+```js
+var kid = {
+     name: "lyq",
+     age: 12,
+     like: {
+          name: "wyf",
+          age: 22,
+     }
+}
+var adult = {};
+
+function deepCopy(sourse, target) {
+     for (var key in sourse) {
+          //循环私有的属性，排除共有的原型链上的属性
+          if (sourse.hasOwnProperty(key)) {
+               //判断如果是引用类型另外处理，属性直接target[key] = sourse[key];
+               if (typeof sourse[key] == "Object") {
+                    //target[key] = {};
+                    //target[key] = [];
+                    //用三元运算符初始确定target引用类型是数组还是对象
+                    target[key] = Array.isArray(sourse[key]) ? [] : {};
+                    //引出递归：自己调用自己
+                    deepCopy(sourse[key], target[key]);
+               } else {
+                    target[key] = sourse[key];
+               }
+          }
+     }
+}
+deepCopy(kid, adult);
+console.log(kid);
+console.log(adult);
+```
+
+### 数组去重
+
+```js
+var arr = [1, 1, 1, 2, 3, 3, 4, 5, 5];
+function distinctArray(arr) {
+    var newArray = [];
+    for (var i = 0; i < arr.length; i++) {
+        if (newArray.indexOf(arr[i]) == -1) {
+            newArray.push(arr[i]);
+        }
+    }
+    return newArray;
+}
+var newArray = distinctArray(arr);
+console.log(newArray);
+```
+
+### 立即执行函数：自己调用自己的函数
+
+```js
+//自执行函数，一般用作初始化
+//第一种方法
+(function() {
+    console.log("方法1");
+})();
+//第二种方法
+(function() {
+    console.log("方法2");
+}());
+// 第三种方法
+! function() {
+    console.log("方法3");
+}();
+// 第四种方法
++
+function() {
+    console.log("方法4");
+}();
+// 第五种方法
+-
+function() {
+    console.log("方法5");
+}();
+// 第六种方法
+~ function() {
+    console.log("方法6");
+}();
+```
+
+### 惰性函数：在函数中会进行一些分支判断或者初始化操作，然后将函数指向修改后的函数，再次执行这个函数的时候，执行的是修改之后的函数指向
+
+```js
+function foo() {
+    console.log("我是js的初始化");
+    foo = function() {
+        console.log("真正的业务逻辑业务");
+    }
+}
+//foo.des = "shabi";
+//console.log(foo.des);//shabi
+//第一次执行
+foo();//我是js的初始化
+//console.log(foo.des);//undefined
+//第一次后面的执行
+foo();//真正的业务逻辑业务
+foo();//真正的业务逻辑业务
+foo();//真正的业务逻辑业务
+foo();//真正的业务逻辑业务
+```
+
+##### 扩展：如果想一直执行初始化，我们可以定义一个变量来接收，这样每次执行的都是初始化
+
+```js
+function foo() {
+    console.log("我是js的初始化");
+    foo = function() {
+        console.log("真正的业务逻辑业务");
+    }
+}
+// 扩展
+var f = foo;
+f();//我是js的初始化
+f();//我是js的初始化
+f();//我是js的初始化
+```
+
+面向对象
+
+
+
+
+
+## 补充
+
+### 获取键盘的点击事件
+
+```js
+//示例为当前页面点击enter键
+$(document).keyup(function(event) {
+     if (event.keyCode == 13) {
+          alert("你按下了enter(回车键)");
+     }
+});
+```
+
+### 获取本文件的文件名
+
+```js
+function loca() {
+     var a = location.href.split('/');
+     var b = a[a.length - 1];
+     var c = b.slice(10, 11);
+     return c;
+}
+```
+
+### joIn函数解决遍历打印最后留下的小尾巴
+
+- join('数组每个元素中间想加的内容')
+
+```js
+var arr = ['你牛逼','我牛逼','大家都牛逼'];
+console.log(arr.join(' - '));
 ```
 
