@@ -1394,7 +1394,7 @@ console.log('myName')
 
 
 
-### npm初始化
+### npm初始化 --- Node Package Manager
 
 - 输入这个命令行就会生成package.json文件，这个文件会显示的是当前项目下的信息
 
@@ -1456,7 +1456,7 @@ module.exports = {
 - --save-dev是开发时依赖，项目打包后就不需要继续使用了
 
 ```bash
-npm install webpack@3.6.0 --save-dev
+npm install webpack --save-dev
 ```
 
 - 安装后package.json文件的变化
@@ -1706,3 +1706,680 @@ module: {
 }
 ```
 
+### 配置vue
+
+- 配置后就可以实现vue实例化等功能
+
+- 配置vue环境有三种方法
+  - 第一种：下载vue的js文件，然后导入
+  - 第二种：导入cdn
+  - 第三种：通过npm安装vue环境，就是下面这种方法
+
+- 安装vue环境
+
+```bash
+#不需要再后面加--dev，因为不只是开发时依赖
+npm install vue --save
+```
+
+- 安装后试一下使用vue
+
+```html
+<!-- index.html -->
+<div id="app">
+    {{message}}
+</div>
+```
+
+```js
+//main.js
+import Vue from 'vue'
+
+new Vue({
+    el: '#app',
+    data: {
+        message: '你牛逼'
+    }
+})
+```
+
+- 运行后发现浏览器console报错
+
+```asciiarmor
+You are using the runtime-only build of Vue where the template compiler is not available. Either pre-compile the templates into render functions, or use the compiler-included build.
+//在模板编译器不可用的情况下，您使用的是仅运行时版本的Vue。可以将模板预编译为呈现函数，也可以使用编译器附带的构建。
+```
+
+- 报错的原因是vue有两个版本
+  - 1.runtime-only -> 代码中,不可以有任何的template
+  - 2.runtime-compiler -> 代码中,可以有template,因为有compiler可以用于编译template
+
+- 单独安装vue后只是第一个版本runtime-only
+- 还需要再webpack.config.js中配置
+
+```js
+module.exports = {
+     resolve:{
+          alias:{
+               'vue$':'vue/dist/vue.esm.js'
+          }
+     }
+}
+```
+
+- 配置后就相当于安装第二个版本了，运行就没有报错了
+
+### el和template的关系（el和tempalte同时存在的情况）
+
+- 在项目中index.html中body里面只有一个div:app
+
+```html
+<div id="app">
+</div>
+```
+
+- div:app里面内容是从main.js中vue实例template覆盖过来的
+
+![image-20211115141908669](C:\Users\nnf\Desktop\超叼的\img\image-20211115141908669.png)
+
+### Vue文件
+
+- 但是template和data等数据都放在main.js文件中，main.js文件就显得很臃肿，所以就引出了vue文件，把数据都放到vue文件里面
+
+![image-20211116095332392](C:\Users\nnf\AppData\Roaming\Typora\typora-user-images\image-20211116095332392.png)
+
+- 但是想用vue文件需要
+- 安装vue-loader和vue-template-compiler
+
+```bash
+npm install vue-loader vue-template-compiler --save-dev
+```
+
+- 配置webpack.config.js
+
+```js
+module: {
+  rules: [
+    {
+      test: /\.vue$/,
+      use:['vue-loader']
+    }
+  ]
+}
+```
+
+- 但是配置后，npm run build运行还是没成功，查阅资料后发现因为版本太新了，还需要再配置一下webpack.config.js
+
+```js
+const VueLoaderPlugin = require('vue-loader/lib/plugin')
+
+module.exports = {
+    plugins: [new VueLoaderPlugin()],
+}
+```
+
+- 然后就可以了
+
+- vue文件中的套娃，一个套一个，无限循环
+
+![image-20211116141803323](C:\Users\nnf\Desktop\超叼的\img\image-20211116141803323.png)
+
+### 省略后缀名
+
+- 直接在resolve->extensions中加入
+
+```js
+module.exports = {
+    resolve: {
+        extensions:['.js','.css','.vue'],
+    },
+}
+```
+
+### Plugin插件
+
+##### 添加版权
+
+- 添加后，打包后的文件头部都会有版权信息
+
+```js
+const webpack = require('webpack');
+
+module.exports = {
+    plugins: [
+        new VueLoaderPlugin(),
+        //可以在打包的文件中设定版权
+        new webpack.BannerPlugin('最终版权归 why牛腩粉 所有'),
+    ],
+}
+```
+
+##### HtmlWebpackPlugin插件 --- 打包html文件
+
+- 安装HtmlWebpackPlugin插件
+
+```bash
+npm install html-webpack-plugin --save-dev
+```
+
+- 配置webpack.config.js
+
+```js
+//安装后导出HtmlWebpackPlugin插件
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+
+module.exports = {
+    plugins: [
+        new VueLoaderPlugin(),
+        new webpack.BannerPlugin('最终版权归 why牛腩粉 所有'),
+        //运用这个插件
+        new HtmlWebpackPlugin()
+    ],
+}
+```
+
+- 然后npm run build发现打包目录dist中生成index.html文件
+- 但是这个文件里有两个错误
+  - 第一个：没有div:#app组件
+  - 第二个：bundle.js文件路径不对
+
+![image-20211116193442338](C:\Users\nnf\Desktop\超叼的\img\image-20211116193442338.png)
+
+- 解决方法：
+- 第一个：在webpack.config.js中配置
+
+```js
+plugins: [
+    new VueLoaderPlugin(),
+    new webpack.BannerPlugin('最终版权归 why牛腩粉 所有'),
+     //这里写的会根据没打包之前index.html文件补充到打包后的index.html文件中
+    new HtmlWebpackPlugin({
+        template: 'index.html'
+    })
+],
+```
+
+- 第二个解决方法：删掉没打包之前index.html文件中引用js文件的script，打包后会自动生成
+
+![image-20211116194722830](C:\Users\nnf\Desktop\超叼的\img\image-20211116194722830.png)
+
+- 按情况应该会自动生成对应引用js文件script的，但是没成功，js文件路径还是没对，先不管了
+
+##### uglifyjs插件 --- 丑化js文件（就是把那些空格和注释删掉，压缩内存）
+
+- 安装uglifyjs
+
+```bash
+npm install uglifyjs-webpack-plugin@1.1.1 --save-dev
+```
+
+- 配置webpack.config.js
+
+```js
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
+
+module.exports = {
+    plugins: [
+        new VueLoaderPlugin(),
+        new webpack.BannerPlugin('最终版权归 why牛腩粉 所有'),
+        new HtmlWebpackPlugin(),
+        new UglifyJsPlugin(),
+    ],
+}
+```
+
+- 但是我发现这个东西被弃用了，所以还是别安装了。。
+
+### 热部署 --- 搭建本地服务器，绑定一个文件夹，每次保存都会热更新，把代码放进内存里，还没放进磁盘里，改代码改好了，再npm run build才会打包代码进磁盘里
+
+- 安装本地服务器
+
+```bash
+npm install --save-dev webpack-dev-server
+```
+
+- 配置webpack.config.js
+- 这里devServe还有几个属性
+  - contentBase:为哪一个文件夹提供本地服务，默认是根文件夹，我们这里要填写./dist
+  - port :端口号
+  - inline :页面实时刷新
+  - historyApiFallback:在SPA页面中，依赖HTML5的history模式
+
+```js
+//新版本的
+module.exports = {
+     plugins: {
+       new webpack.LoaderOptionsPlugin({
+         options: {
+           postcss: function () {
+             return [precss, autoprefixer];
+           },
+           devServer: {
+             //本地服务器所加载的页面所在的目录
+             contentBase: "./public", 
+             //实时刷新
+             inline: true 
+           }
+         }
+       })
+     }
+}
+```
+
+- 在package.json中配置，下次运行命令行就只要npm run dev
+
+```json
+"name": "meetwepack",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "build": "webpack",
+         //--open表示自动打开页面
+        "dev": "webpack-dev-server --open"
+    },
+```
+
+- 按道理来说npm run dev就可以了，但是我运行出后是Cannot GET /，单独右键运行就可以，而且改代码也有右上角热更新的标志，但就是没变化，那就先这样先。。
+
+
+
+## Vue cli2
+
+### runtime-compiler和runtime-only的区别
+
+- runtime-compiler中注册子组件
+
+```js
+//runtime-compiler(v1)
+//template -> ast -> render ->vdom ->UI
+new Vue({
+     el: '#app',
+     template:'<App/>',
+     components: { App }s
+})
+```
+
+- runtime-only中注册子组件
+
+```js
+//runtime-only(v2)(2比1的性能更多)
+//render -> vdom ->UI
+new Vue({
+     el: '#app',
+     render:function(h){
+          return h(App)
+     }
+})
+
+//简写版
+new vue({
+     el: '#app",
+     render: h => h(App)
+})
+```
+
+
+
+## Vue cli3
+
+### 路由器
+
+- 安装vue-router
+
+```bash
+npm install vue-router --save
+```
+
+- 在src文件夹下建文件夹：router
+- 在router文件夹下建js文件：index.js，用来配置路由相关信息
+
+- index.js的内容（这里是旧版vue2的）
+
+```js
+//导入插件
+import Vue from 'vue'
+import VueRouter from 'vue-router'
+
+//1.通过Vue.user(插件)，安装插件
+Vue.use(VueRouter)
+
+//2.实例化VueRouter对象
+// const router = new VueRouter({
+//     routes:[
+//     ]
+// })
+//一般吧routes单独放出来
+const routes = [
+	
+]
+const router = new VueRouter({
+    //配置路由和组件之间的应用关系
+    routes
+})
+
+//3.将router对象传入到Vue实例中
+export default router
+```
+
+- 新版index.js（vue3）
+
+```js
+import { createRouter, createWebHistory } from 'vue-router'
+//引入
+//import Home from '../components/Home.vue'
+const routes = [{
+    //在这里配置路由配置
+     //path:'./home',
+     //component: Home
+}]
+const routerHistory = createWebHistory()
+const router = createRouter({
+    history: routerHistory,
+    routes
+})
+export default router
+```
+
+- 在main.js中接收router
+
+```js
+import router from './router'
+
+createApp(App).use(router).mount('#app')
+```
+
+- 使用路由
+  - router-link：相当于a标签
+  - router-view：点击link后渲染组件的位置
+
+```html
+<router-link to="/home">home</router-link>
+<router-link to="/about">about</router-link>
+<router-view></router-view>
+```
+
+### 路由默认值
+
+- 每次一打开页面就显示主页，不需要点击再显示
+
+```js
+const routes = [{
+    path:'/',
+    //重定向，也就是将根目录重定向到/home
+    redirect:'/home'
+}]
+```
+
+### router-link的其它属性
+
+- <u>tag</u>：默认渲染a标签，可以通过这个来改成其它的标签
+
+```html
+<router-link to="/home" tag="button">home</router-link>
+```
+
+- 但是vue3.x版本vue-router4.x中tag已经无效了，需要用v-slot处理
+
+```html
+<router-link to="/test" v-slot="{navigate, isActive, isExactActive}">
+  <el-button @click="navigate" :class="{active: isActive, exactActive: isExactActive}">测试1</el-button>
+</router-link>
+```
+
+- <u>replace</u>：replace不会留下history记录，就可以防止用户点击返回按钮返回到上一个页面中
+
+```html
+<router-link to="/home" replace>home</router-link>
+```
+
+- 被点击的router-link会自动加属性class="router-link-active"
+- 然后我们想给点击的router-link添加样式的话，直接在css中.router-link-active{}就行了
+
+```css
+.router-link-active{
+}
+```
+
+- <u>active-class</u>：给活跃的router-link自动添加的class自定义名字
+
+```html
+<router-link to="/home" active-class="active">home</router-link>
+```
+
+- 如果有很多个router-link一个一个改active-class很麻烦，可以在index.js中加一个属性linkActiveClass，就会全部自动换
+
+```js
+const router = createRouter({
+    history: routerHistory,
+    routes,
+     //统一换
+    linkActiveClass: 'active'
+})
+```
+
+### 通过点击事件跳转路径
+
+- html中绑定点击事件
+
+```html
+<button @click="homeclick">home</button>
+<button @click="aboutclick">about</button>
+<router-view></router-view>
+```
+
+- js中点击事件
+
+```js
+methods: {
+  homeclick(){
+    //this.$router.push('/home')
+    this.$router.replace('/home')//replace没有返回
+  },
+  aboutclick(){
+    //this.$router.push('/about')
+    this.$router.replace('/about')//replace没有返回
+  }
+},
+```
+
+### 动态路由器
+
+- index.js配置路由器路径
+
+```js
+const routes = [{
+    path: '/user/:userId',
+    component: User
+}]
+```
+
+- App.vue配置router-link
+
+```vue
+<template>
+  <div>
+    <!-- 用v-bind绑定data中的数据，并拼接在一起就可以了 -->
+    <router-link :to="'/user/' + userId" replace>user</router-link>
+    <router-view></router-view>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'App',
+  data() {
+    return {
+      //只要动态改变data中的数据，路径值就会对应改变
+      userId:'wyfnb'
+    }
+  },
+}
+</script>
+```
+
+- 如果想在页面中显示路径值
+
+- User.vue中
+
+```vue
+<template>
+    <div>
+        <h1>我是user</h1>
+        <h2>我的路径是{{userId}}</h2>
+    </div>
+</template>
+
+<script>
+export default {
+    name: '短暂逃离User',
+    computed: {
+        userId(){
+             //$route就是获取到当前处于活跃状态的路由
+             //在这里表示获取到处于活跃状态的路由的param(参数)值
+            return this.$route.params.userId
+        }
+    },
+};
+</script>
+```
+
+### 点击事件 => 动态路由
+
+```vue
+<template>
+    <div>
+        <button @click='userClick'></button>
+    </div>
+</template>
+```
+
+```js
+methods:{
+     userClick(){
+          this.$router.push('/user/' + this.userId)
+     }
+}
+```
+
+### 路由懒加载
+
+- 首先,我们知道路由中通常会定义很多不同的页面.
+- 这个页面最后被打包在哪里呢?一般情况下，是放在一个js文件中.
+- 但是,页面这么多放在一个js文件中,必然会造成这个页面非常的大.如果我们一次性从服务器请求下来这个页面,可能需要花费一定的时间,甚至用户的电脑上还出现了短暂空白的情况.
+- 如何避免这种情况呢?使用路由懒加载就可以了,这样就可以每个页面打包时生成一个js文件
+
+```js
+const routes = [{
+    path: '/',
+    //重定向，也就是将根目录重定向到/home
+    redirect: '/home'
+}, {
+    path: '/home',
+     //箭头函数导入
+    component: () =>
+        import ('../components/Home.vue')
+}, {
+    path: '/about',
+    component: () =>
+        import ('../components/About.vue')
+}, {
+    path: '/user/:userId',
+    component: () =>
+        import ('../components/User.vue')
+}]
+```
+
+### 路由嵌套使用
+
+- 在index.js中配置
+
+```js
+const routes = [{
+    path: '/home',
+    component: () =>
+        import ('../components/Home.vue'),
+    //子路由
+    children: [{
+        //子路由是不用加/的
+        path: 'message',
+        component: () =>
+            import ('../components/Message.vue')
+    }, {
+        path: 'news',
+        component: () =>
+            import ('../components/News.vue')
+    }]
+},]
+```
+
+- router-link是在父路由.vue的文件中添加的
+
+```vue
+<template>
+    <div>
+        <h1>我是首页</h1>
+        <!-- 路径一定要写父路由 --> 
+        <router-link to="/home/message" replace>信息</router-link>
+        <router-link to="/home/news" replace>新闻</router-link>
+        <router-view></router-view>
+    </div>
+</template>
+```
+
+### 路由传递参数
+
+- 在App.vue中router-link的to属性里面写参数
+
+```html
+<router-link :to="{path:'/profile',query:{name:'why',age:21,height:1.88}}" replace>档案</router-link>
+```
+
+- 路径就会显示参数
+
+```http
+http://localhost:8080/profile?name=why&age=21&height=1.88
+```
+
+- 如果想在profile.vue中显示参数的数据
+- 就要在profile.vue中配置
+
+```vue
+<template>
+    <div>
+        <h1>档案</h1>
+         <!-- 用$route引用query方法 -->
+        <h2>{{$route.query.name}}</h2>
+        <h2>{{$route.query.age}}</h2>
+        <h2>{{$route.query.height}}</h2>
+    </div>
+</template>
+```
+
+### 点击事件 => 传递参数
+
+```vue
+<template>
+    <div>
+        <button @click='profileClick'></button>
+    </div>
+</template>
+```
+
+```js
+methods:{
+     profileClick(){
+          this.$router.push({
+               path:'/profile',
+               query:{
+                    name:'why',
+                    age:21,
+                    height:1.88
+               }
+          })
+     }
+}
+```
+
+### 
