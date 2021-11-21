@@ -2024,7 +2024,7 @@ new vue({
 
 ## Vue cli3
 
-### 路由器
+### 路由器 --- router-link 和 router-view
 
 - 安装vue-router
 
@@ -2337,6 +2337,8 @@ const routes = [{
 ```
 
 - 路径就会显示参数
+- 协议://主机:端口/路径?查询
+- scheme://host : port/ path?query#fragment
 
 ```http
 http://localhost:8080/profile?name=why&age=21&height=1.88
@@ -2382,4 +2384,207 @@ methods:{
 }
 ```
 
-### 
+### 全局导航守卫（跳转界面的反应）
+
+- 每次点击切换路由，页面title随着改变
+
+- index.js中添加函数
+
+```js
+const routes = [{
+    path: '/',
+    redirect: '/home'
+}, {
+    path: '/home',
+    component: () =>
+        import ('../components/Home.vue'),
+     //给每个路由加元数据meta.title属性
+    meta: {
+        title: '首页'
+    },
+}, {
+    path: '/about',
+    component: () =>
+        import ('../components/About.vue'),
+    meta: {
+        title: '关于'
+    }
+}, {
+    path: '/user/:userId',
+    component: () =>
+        import ('../components/User.vue'),
+    meta: {
+        title: '用户'
+    }
+}, {
+    path: '/profile',
+    component: () =>
+        import ('../components/Profile.vue'),
+    meta: {
+        title: '档案'
+    }
+}]
+
+//前置守卫(guard)：跳转之前的回调函数
+//获取每个路由的title
+router.beforeEach((to, from, next) => {
+     //加matched[0]是为了每次打开页面显示第一个（首页）
+    document.title = to.matched[0].meta.title
+     //这个next()一定要加，否则点击路由不会跳转，在没有调用beforeEach这个函数的时候，底层会自动调用next()方法
+    next()
+})
+```
+
+- 补充
+
+```js
+//后置狗子(hook)：跳转之后的回调函数
+router.afterEach((to,from)=> {
+	console.log('----');
+})
+```
+
+- 路由独享的守卫
+
+```js
+const routes = [{
+    path: '/home',
+    component: () =>
+        import ('../components/Home.vue'),
+    //跳转到这个路由时触发
+    beforeEnter: (to, from, next) => {
+        console.log('我跳转到这个路由之前干的');
+        next()
+    },
+    //路由改变时触发
+    beforeUpdate() {
+        console.log('路由更新了喔');
+    },
+    //离开这个路由时触发
+    beforeRouteLeave(to, from, next) {
+        console.log('我离开上一个路由后干的');
+        next()
+    },
+}]
+```
+
+### 页面缓存 --- keep-alive
+
+- keep-alive是Vue内置的一个组件，可以使被包含的组件保留状态，或避免重新渲染，可以避免组件频繁的创建和销毁。
+
+- 在实现之前先回顾一下几个生命周期函数
+
+```vue
+<script>
+export default {
+      name: 'App',
+      data() {
+        return {
+          userId:'wyfnb'
+        }
+      },
+  	//组件被创建 => 执行
+     created(){
+
+     },
+     //组件被销毁 => 执行
+     destroyed(){
+
+     },
+     //下面这两个必须结合keep-alive使用
+     //组件被活跃 => 执行
+     activated(){
+
+     },
+     //组件不活跃 => 执行
+     deactivated(){
+
+     }
+}
+</script>
+```
+
+- 开始
+- App.vue中的router-view外要加keep-alive
+
+```vue
+<keep-alive>
+  <router-view/>
+</keep-alive>
+```
+
+- Home.vue下有两种状态：新闻news 和 信息message
+
+```vue
+<template>
+    <div>
+        <h1>我是首页</h1>
+        <router-link to="/home/message" replace>信息</router-link>
+        <router-link to="/home/news" replace>新闻</router-link>
+        <router-view></router-view>
+    </div>
+</template>
+```
+
+- 首先要把每次加载的默认路径删了
+
+- 然后要给Home.vue添加方法
+
+```vue
+<script>
+export default {
+    name: '短暂逃离Home',
+
+    data() {
+        return {
+            path:'/home/news'
+        };
+    },
+    //组件被活跃 => 执行
+    activated() {
+        //把记录状态放进路径里
+        this.$router.push(this.path);
+    },
+    //守卫：离开组件时执行
+    beforeRouteLeave (to, from, next) {
+        //记录离开时状态
+        this.path = this.$route.path;
+        next();
+    }
+};
+</script>
+```
+
+### keep-alive的属性
+
+- include：这里的组件都会被缓存
+- exclude：这里的组件不会被缓存
+- 如果想某个组件不被缓存就可以加excludes属性
+- 在App.vue中
+
+```vue
+<!-- excludes中的组件就不会被缓存 -->
+<keep-alive exclude="Profile,User">
+	<router-view/>
+</keep-alive>
+```
+
+- 上面的Profile,User是组件的name属性
+
+```vue
+<script>
+export default {
+    //name属性
+    name: 'Profile',
+    data() {
+        return {
+        };
+    },
+    mounted() {
+    },
+    methods: {
+    },
+};
+</script>
+```
+
