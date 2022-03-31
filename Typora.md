@@ -5,8 +5,6 @@
 - 任务列表效果（小点）
 
 \```+语言
-
-Ctrl+U 下划线
 Ctrl+1 一阶标题 Ctrl+B 字体加粗
 Ctrl+2 二阶标题 Ctrl+I 字体倾斜
 Ctrl+3 三阶标题 Ctrl+U 下划线

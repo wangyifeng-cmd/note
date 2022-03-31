@@ -2588,3 +2588,218 @@ export default {
 </script>
 ```
 
+
+
+
+
+## vue的扩展
+
+### 生命函数
+
+![Vue 实例生命周期](https://cn.vuejs.org/images/lifecycle.png)
+
+### 滚轮事件
+
+- 在mounted钩子中给window添加一个滚动滚动监听事件
+
+```js
+mounted () {
+  window.addEventListener('scroll', this.handleScroll)
+},
+```
+
+- 然后在方法中，添加这个handleScroll方法获取滚动值
+
+```js
+handleScroll () {
+  var scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
+  console.log(scrollTop)
+},
+```
+
+- 或者添加向上滚动或向下滚动事件
+
+```js
+handleScroll(){
+    // 页面滚动距顶部距离
+    var scrollTop = window.pageYOffset || document.documentElement.scrollTop || 
+              document.body.scrollTop
+    var scroll = scrollTop - this.i;
+    this.i = scrollTop;
+    if(scroll<0){
+        var topbar2 = document.getElementById('topbar2')
+        topbar2.style.top = '0'
+    }else{
+        var topbar2 = document.getElementById('topbar2')
+        topbar2.style.top = '-56px'
+    }
+},
+```
+
+- 最后要在destroyed生命函数中销毁
+
+```js
+destroyed(){
+  window.removeEventListener('scroll', this.handleScroll)
+},
+```
+
+### 解决点击子级，父级也跟着反应问题
+
+- 首先给子级加个@click.stop=""
+
+```vue
+<div @click="shadowClick">
+      <div @click.stop="shadowChildrenClick">
+     </div>
+</div>
+```
+
+- 然后在methods中
+
+```js
+shadowClick(event) {
+  var el1 = event.currentTarget;
+  var el2 = event.target;
+  if(el1 == el2){
+    //点击后的事件
+   }  
+},
+```
+
+- 其实就是冒泡，在js笔记和jq查笔记也可以解决，还更简单
+
+### 获取当前点击对象
+
+```js
+btnClick(e){
+	e.currentTarget
+}
+```
+
+### 获取当前点击对象离页面上方和左方的距离
+
+```js
+btnClick(e){
+  e.currentTarget.getBoundingClientRect().left;
+  e.currentTarget.getBoundingClientRect().top;
+}
+```
+
+### 获取子级元素
+
+```js
+methods: {
+clickfun(e) {
+// e.target 是你当前点击的元素
+// e.currentTarget 是你绑定事件的元素
+    #获得点击元素的前一个元素
+e.currentTarget.previousElementSibling.innerHTML
+    #获得点击元素的第一个子元素
+    e.currentTarget.firstElementChild
+    # 获得点击元素的下一个元素
+    e.currentTarget.nextElementSibling
+    # 获得点击元素中id为string的元素
+    e.currentTarget.getElementById("string")
+    # 获得点击元素的string属性
+    e.currentTarget.getAttributeNode('string')
+    # 获得点击元素的父级元素
+    e.currentTarget.parentElement
+    # 获得点击元素的前一个元素的第一个子元素的HTML值
+}
+},
+```
+
+### 安装session
+
+- 安装
+
+```bash
+npm install vue-session
+```
+
+- 在main.js中引入
+
+```js
+import VueSession from 'vue-session'
+Vue.use(VueSession)
+```
+
+- 使用
+
+```js
+this.$session.set("key",value); //存session
+this.$session.get("key"); //获取session
+```
+
+### 安装cookies
+
+- 安装
+
+```bash
+npm install vue-cookies --save
+```
+
+- 在main.js中引入
+
+```js
+import VueCookies from 'vue-cookies'
+Vue.use(VueCookies);
+```
+
+- 使用
+
+```js
+this.$cookies.set("key",value); //存cookies
+this.$cookies.get("key"); //获取cookies
+```
+
+### methods方法中调用另外一个方法
+
+```js
+this.$options.methods.test();
+```
+
+### 当后端传的数据改了data中的数据，局部刷新页面
+
+- 监听json_data数据改变，若json_data改变，元素先销毁，再创建，实现页面的局部刷新。
+
+```html
+<!-- 局部刷新的div中加v-if -->
+<div id="content" v-if="file_show">
+    <div v-for="(item,index) in notice" :key='index'>
+        <!-- v-for的内容 -->
+    </div>
+</div>
+```
+
+```js
+data() {
+    return {
+        json_data:[{},{},{}]
+        file_show:true
+    };
+},
+```
+
+```js
+watch:{
+    //list为改变的数据
+    // eslint-disable-next-line no-unused-vars
+    json_data(newVal,oldVal){
+        this.file_show = false;
+        this.$nextTick(() => {
+            this.file_show = true;
+        })
+    },
+},
+```
+
+### eslint提示‘xxx’ is defined but never used
+
+- 找到`.eslintrc.js`文件，在`rules`里面添加上如下代码，就可以去掉提示了。
+
+```
+"no-unused-vars": 'off'
+```
+

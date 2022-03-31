@@ -61,8 +61,10 @@ git push --set-upstream origin master
 git add 文件名 #提交单个文件
 git add . #提交全部内容
 
-#暂存区->历史记录区
+#暂存区->历史记录区 #用于提交暂存区的文件
 git commit -m "王译锋的第一次提交"
+#为防止路径冲突问题可以用这个 #用于提交跟踪过的文件
+git commit -am "王译锋的第一次提交"
 
 #历史记录区->提交到gitHub上
 git push
@@ -140,6 +142,18 @@ git merge master --allow-unrelated-histories
 # Merge made by the 'recursive' strategy
 git pull origin main
 git push origin main
+```
+
+
+
+## gitee
+
+### 强制把代码上传到gitee上
+
+- 不要随便用-f的操作，因为f意味着强制push，会覆盖掉远程的所有代码!!!
+
+```bash
+git pull -f origin master
 ```
 
 

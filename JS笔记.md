@@ -2,6 +2,10 @@
 
 # JS笔记
 
+***
+
+
+
 ### js组成部分
 
 1.ECMAscript：语法规范 定义变量
@@ -2607,7 +2611,7 @@ window.onload = function() {
 - offsetWidth：自己的宽度+border值
 - offsetHeight：自己的高度+border值
 - offsetLeft：分是否有定位
-- offserTop
+- offsetTop
 
 |              |                获取offsetLeft                |
 | :----------: | :------------------------------------------: |
@@ -2642,7 +2646,7 @@ wyf$("div").onscroll = function(){
 - document.title====获取title
 - document.documentElement====获取整个html
 
-### 给鼠标添加跟随图片，小苍蝇
+### 鼠标跟随图片，小苍蝇
 
 - e.clientX：获取鼠标X坐标
 - e.clientY：获取鼠标Y坐标
@@ -3060,7 +3064,7 @@ console.log(kid);
 console.log(kid instanceof createKid);//false，工厂模式的缺点：找不到父类
 ```
 
-#### 4.自定义构造函数    优点：1.完美优化代码  2.还可以找到父类，不想工厂模式一样找不到父类
+#### 4.自定义构造函数    优点：1.完美优化代码  2.还可以找到父类，不像工厂模式一样找不到父类
 
 - instanceof  找父类，子类 instanceof 父类，找到返回true，找不到返回false
 - constructor  找父类，用点语法调用，直接返回父类函数
@@ -3124,11 +3128,11 @@ console.log(kid);//CreateKid {name: "lyq", age: 12, major: "画画"}
 2. 每一个实例化对象都有一个\__proto__属性，指向他所属类的原型对象
 3. 每一个原型对象都有一个constructor属性，指向构造函数本身
 
-![image-20210813204624829](C:\Users\锋锋的沉默\AppData\Roaming\Typora\typora-user-images\image-20210813204624829.png)
+![image-20210813204624829](C:\Users\nnf\AppData\Roaming\Typora\typora-user-images\image-20210813204624829.png)
 
 #### 完整的原型图
 
-![image-20210816161943213](C:\Users\锋锋的沉默\AppData\Roaming\Typora\typora-user-images\image-20210816161943213.png)
+![image-20210816161943213](C:\Users\nnf\AppData\Roaming\Typora\typora-user-images\image-20210816161943213.png)
 
 - 计算机直接给Object.prototype.\__proto__指向null
 
@@ -3142,7 +3146,7 @@ console.log(kid);//CreateKid {name: "lyq", age: 12, major: "画画"}
 
 - constructor：把原型强制指向其他的地方
 
-![image-20210814202815457](C:\Users\锋锋的沉默\AppData\Roaming\Typora\typora-user-images\image-20210814202815457.png)
+![image-20210814202815457](C:\Users\nnf\AppData\Roaming\Typora\typora-user-images\image-20210814202815457.png)
 
 ```js
 function CreateKid(name, age, major) { //自定义构造函数
@@ -3327,7 +3331,7 @@ console.log(kid2);
 
 - 跟前面的混入式继承都有一样的缺陷：存在数据共享问题
 
-  ![image-20210815111950193](C:\Users\锋锋的沉默\AppData\Roaming\Typora\typora-user-images\image-20210815111950193.png)
+  ![image-20210815111950193](C:\Users\nnf\AppData\Roaming\Typora\typora-user-images\image-20210815111950193.png)
 
 ```js
 function Kid1() {}
@@ -3962,8 +3966,8 @@ console.log(Object.entries(kid));
 var jsonStr = '({"name":"lyq","age":"12"})';
 console.log(jsonStr);
 console.log(eval(jsonStr)); //eval()可以把json数据转换为真正的对象格式的数据
-console.log("1+3");
-console.log(eval("1+3"));
+console.log("1+3");//1+3
+console.log(eval("1+3"));//4
 ```
 
 
@@ -4183,7 +4187,9 @@ var newArray = distinctArray(arr);
 console.log(newArray);
 ```
 
-### 立即执行函数：自己调用自己的函数
+### IIFF立即执行函数：自己调用自己的函数
+
+- 自执行函数，一班用于初始化
 
 ```js
 //自执行函数，一般用作初始化
@@ -4246,13 +4252,13 @@ function foo() {
     }
 }
 // 扩展
-var f = foo;
+var f = foo
 f();//我是js的初始化
 f();//我是js的初始化
 f();//我是js的初始化
 ```
 
-面向对象
+
 
 
 
@@ -4280,6 +4286,11 @@ const power = num => {
 
 ```js
 const sum = (num1,num2) => num1 + num2
+
+//等同于
+const sum = (num1,num2) => {
+     return num1 * num2
+}
 ```
 
 - 实例：计时器
@@ -4335,6 +4346,43 @@ $(document).keyup(function(event) {
      }
 });
 ```
+
+| **字母数字** |      |      |      |      |      |      |      |
+| ------------ | ---- | ---- | ---- | ---- | ---- | ---- | ---- |
+| 按键         | 键码 | 按键 | 键码 | 按键 | 键码 | 按键 | 键码 |
+| A            | 65   | J    | 74   | S    | 83   | 1    | 49   |
+| B            | 66   | K    | 75   | T    | 84   | 2    | 50   |
+| C            | 67   | L    | 76   | U    | 85   | 3    | 51   |
+| D            | 68   | M    | 77   | V    | 86   | 4    | 52   |
+| E            | 69   | N    | 78   | W    | 87   | 5    | 53   |
+| F            | 70   | O    | 79   | X    | 88   | 6    | 54   |
+| G            | 71   | P    | 80   | Y    | 89   | 7    | 55   |
+| H            | 72   | Q    | 81   | Z    | 90   | 8    | 56   |
+| I            | 73   | R    | 82   | 0    | 48   | 9    | 57   |
+
+| **数字** |      |       |      | **功能键** |      |      |      |
+| -------- | ---- | ----- | ---- | ---------- | ---- | ---- | ---- |
+| 按键     | 键码 | 按键  | 键码 | 按键       | 键码 | 按键 | 键码 |
+| 0        | 96   | 8     | 104  | F1         | 112  | F7   | 118  |
+| 1        | 97   | 9     | 105  | F2         | 113  | F8   | 119  |
+| 2        | 98   | *     | 106  | F3         | 114  | F9   | 120  |
+| 3        | 99   | +     | 107  | F4         | 115  | F10  | 121  |
+| 4        | 100  | Enter | 108  | F5         | 116  | F11  | 122  |
+| 5        | 101  | -     | 109  | F6         | 117  | F12  | 123  |
+| 6        | 102  | .     | 110  |            |      |      |      |
+| 7        | 103  | /     | 111  |            |      |      |      |
+
+| **控制键** |      |            |      |             |      |      |      |
+| ---------- | ---- | ---------- | ---- | ----------- | ---- | ---- | ---- |
+| 按键       | 键码 | 按键       | 键码 | 按键        | 键码 | 按键 | 键码 |
+| BackSpace  | 8    | Esc        | 27   | Right Arrow | 39   | -_   | 189  |
+| Tab        | 9    | Spacebar   | 32   | Dw Arrow    | 40   | .>   | 190  |
+| Clear      | 12   | Page Up    | 33   | Insert      | 45   | /?   | 191  |
+| Enter      | 13   | Page Down  | 34   | Delete      | 46   | `~   | 192  |
+| Shift      | 16   | End        | 35   | Num Lock    | 144  | [{   | 219  |
+| Control    | 17   | Home       | 36   | ;:          | 186  | \|   | 220  |
+| Alt        | 18   | Left Arrow | 37   | =+          | 187  | ]}   | 221  |
+| Cape Lock  | 20   | Up Arrow   | 38   | ,<          | 188  | '"   | 222  |
 
 ### 获取本文件的文件名
 

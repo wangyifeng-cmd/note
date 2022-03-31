@@ -418,6 +418,12 @@ background:linear-gradient(to right,blue 33%,white 33%,white 66%,red 66%);
 background:linear-gradient(45deg,blue 33%,white 33%,white 66%,red 66%);（deg可以控制颜色的角度）
 background:linear-gradient(1.3turn,blue 33%,white 33%,white 66%,red 66%);（turn也可以控制颜色角度）
 ```
+```css
+background: linear-gradient(90deg, #0081ff, #1cbbb4);
+background: linear-gradient(90deg, #9EF5D2, #6DB7F4);
+background: linear-gradient(90deg, #CA4CA8, #2C84F9);
+```
+
 ### 背景径向渐变色
 
 ```css
@@ -426,7 +432,9 @@ background:radial-gradient(100px 100px at 100px 100px,red 30,blue 80%,yellow 99%
 ```
 ### 背景重复线性渐变色
 
-	background:repeating-linear-gradient(red 0px,red 40px,blue 40px,blue 100px);
+```css
+background:repeating-linear-gradient(red 0px,red 40px,blue 40px,blue 100px);
+```
 ### 背景重复径向渐变色
 
 ```css
@@ -483,7 +491,7 @@ inherit：从父元素继承字体的粗细
 ```css
 z-index:1000;
 ```
-![](http://static.zzhitong.com/lesson-files/html/img/10-2.png)
+![](C:\Users\nnf\Desktop\超叼的\img\10-2.png)
 
 ### 绝对定位，和float浮动的漂浮特性很像，谁在最后面谁的层级越高，参照物是离他最近的一个父级定位元素
 
@@ -493,7 +501,7 @@ position:absolute;
 ### 相对定位，相对于自己的位移
 
 ```css
-position:relate;
+position:relative;
 ```
 ### 固定定位，是绝对定位absolute的一种，跟绝对定位的特性一摸一样，但是参照物永远是html
 
@@ -657,7 +665,7 @@ input : focus{
 ### textall文本框，cols控制宽，rows控制高
 
 ```html
-<textarea name="textall" id="" cols="30" rows="10"></textarea>=
+<textarea name="textall" id="" cols="30" rows="10"></textarea>
 ```
 
 ### email,color,data的表单元素
@@ -768,10 +776,13 @@ div p:last-of-type{
 
 ### 伪类选择器，鼠标悬停
 
+- 链接：https://www.w3school.com.cn/css/css_pseudo_classes.asp
+
 - :link 未被访问
 - :hover 鼠标悬停
 - :visited 访问过的
 - :active 点击按下时
+- :focus <input>获取焦点时
 
 ### 过渡动画
 
@@ -831,7 +842,7 @@ transition: width 1s linear 1s,height 2s;
 cursor:url(./img/..),default;
 ```
 
-### 变形，原位置不会脱离文档流（旋转，放大缩小，xy轴移动）
+### 变形，原位置不会脱离文档流（旋转，变大放大缩小，xy轴移动）
 
 ```css
 旋转
@@ -948,7 +959,7 @@ justify-content: space-around;/*水平*/
 ### 视频
 
 ```css
-<video controls(加上才可以播放) muted(静音) autoplay(自动播放，大部分浏览器不支持) loop(循环播放) poster=""(换封面图片) src=""></video>
+<video controls(加上才可以播放) muted(静音，有时候不能自动播放加这个就可以了) autoplay(自动播放，大部分浏览器不支持) loop(循环播放) poster=""(换封面图片) src=""></video>
 ```
 
 ### 音乐
@@ -1012,7 +1023,7 @@ writing-mode:sideways-rl;/*字头向右,竖着排,下一行为左边*/
 box-sizing: border-box;
 ```
 
-### 两个span字体以垂直方向的中心对齐
+### 两个span字体以垂直方向的中心对齐，图片和字对齐
 
 ```css
 vertical-align: middle;
@@ -1179,7 +1190,116 @@ input {
 
 ```css
 background-image: -webkit-linear-gradient(bottom, #fd8403, #ff0000);
+/* 把背景颜色附着到文字上*/
 -webkit-background-clip: text;
+/* 把文字颜色设为透明*/
 -webkit-text-fill-color: transparent;
 ```
 
+### 仿苹果的高斯模糊
+
+```css
+backdrop-filter: blur(10px);
+-webkit-backdrop-filter: blur(10px);
+background-color: #33333350;
+```
+
+### 字体镂空
+
+```css
+span{
+  color:#ffffff00;
+  -webkit-text-stroke:1px #ffffff;
+}
+```
+
+### calc()函数计算像素
+
+```css
+.div {
+  width: calc(100% / 6);
+}
+```
+
+### 瀑布流布局
+
+- column 实现瀑布流主要依赖两个属性。
+- 一个是 column-count 属性，是分为多少列。
+- 一个是 column-gap 属性，是设置列与列之间的距离。
+
+```html
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+        .box {
+            margin: 10px;
+            column-count: 3;
+            column-gap: 10px;
+        }
+        
+        .item {
+            margin-bottom: 10px;
+        }
+        
+        .item img {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="box">
+        <div class="item">
+            <img src="./img/hotel1.jpg" alt="" />
+        </div>
+        <div class="item">
+            <img src="./img/hotel2.jpg" alt="" />
+        </div>
+        <div class="item">
+            <img src="./img/hotel3.jpg" alt="" />
+        </div>
+        <div class="item">
+            <img src="./img/hotel4.jpg" alt="" />
+        </div>
+        <div class="item">
+            <img src="./img/hotel5.jpg" alt="" />
+        </div>
+        <div class="item">
+            <img src="./img/hotel6.jpg" alt="" />
+        </div>
+        <div class="item">
+            <img src="./img/hotel7.jpg" alt="" />
+        </div>
+        <div class="item">
+            <img src="./img/hotel8.jpg" alt="" />
+        </div>
+        <div class="item">
+            <img src="./img/hotel9.jpg" alt="" />
+        </div>
+        <div class="item">
+            <img src="./img/hotel10.jpg" alt="" />
+        </div>
+        <div class="item">
+            <img src="./img/hotel11.jpg" alt="" />
+        </div>
+        <div class="item">
+            <img src="./img/hotel12.jpg" alt="" />
+        </div>
+    </div>
+</body>
+```
+
+### 字体的分类
+
+1. UItralight
+2. Thin
+3. Light
+4. Regular
+5. Medium
+6. Semibold
+7. Bold
+8. Heavy
+9. Black

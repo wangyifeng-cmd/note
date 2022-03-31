@@ -229,6 +229,65 @@ $('dv').index();
 </html>
 ```
 
+### 判断div show的状态
+
+```js
+var temp= $("#test").is(":hidden");//是否隐藏 
+
+var temp1= $("#test").is(":visible");//是否可见 
+```
+
+###  淡出淡入
+
+- .fadeIn(1000) --- 淡入
+- .fadeOut(1000) --- 淡出
+- .fadeToggle(1000) --- 切换淡出淡入
+- .fadeTo(1000,0.5) --- 第一个参数是时间，第二个参数是透明度，这是固定格式，不能省略透明度
+
+```html
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>sailormoon</title>
+    <style>
+        #hhh {
+            width: 305px;
+            height: 100px;
+            background-color: #084e6e;
+        }
+    </style>
+</head>
+
+<body>
+    <button id="btn1">淡入</button>
+    <button id="btn2">淡出</button>
+    <button id="btn3">切换淡出淡入</button>
+    <button id="btn4">透明度</button>
+    <div id="hhh"></div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script>
+        $('#btn1').click(function() {
+            $('#hhh').fadeIn(500);
+        })
+        $('#btn2').click(function() {
+            $('#hhh').fadeOut(500);
+        })
+        $('#btn3').click(function() {
+            $('#hhh').fadeToggle(500);
+        })
+        $('#btn4').click(function() {
+            $('#hhh').fadeTo(500, 0.5);
+        })
+    </script>
+    <script src="./jq.js"></script>
+</body>
+
+</html>
+```
+
 ### 获取组件中的html内容
 
 - .html() --- 相当于原生js中innerHTML
@@ -545,57 +604,6 @@ $('#left li,#right li').each(function(index,ele){
      //ele 返回的是某个元素---element
      console.log(index);
 })
-```
-
-###  淡出淡入
-
-- .fadeIn(1000) --- 淡入
-- .fadeOut(1000) --- 淡出
-- .fadeToggle(1000) --- 切换淡出淡入
-- .fadeTo(1000,0.5) --- 第一个参数是时间，第二个参数是透明度，这是固定格式，不能省略透明度
-
-```html
-<!DOCTYPE html>
-<html>
-
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1.0">
-    <title>sailormoon</title>
-    <style>
-        #hhh {
-            width: 305px;
-            height: 100px;
-            background-color: #084e6e;
-        }
-    </style>
-</head>
-
-<body>
-    <button id="btn1">淡入</button>
-    <button id="btn2">淡出</button>
-    <button id="btn3">切换淡出淡入</button>
-    <button id="btn4">透明度</button>
-    <div id="hhh"></div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    <script>
-        $('#btn1').click(function() {
-            $('#hhh').fadeIn(500);
-        })
-        $('#btn2').click(function() {
-            $('#hhh').fadeOut(500);
-        })
-        $('#btn3').click(function() {
-            $('#hhh').fadeToggle(500);
-        })
-        $('#btn4').click(function() {
-            $('#hhh').fadeTo(500, 0.5);
-        })
-    </script>
-    <script src="./jq.js"></script>
-</body>
-
-</html>
 ```
 
 ### animate动画效果，平移，变大变小，变宽变长
