@@ -980,9 +980,8 @@ justify-content: space-around;/*水平*/
 <iframe src="" name="wyf"></iframe>
 ```
 
+### 代码书写规范
 
-
-	代码书写规范
 1.content: ""
 2.布局位置相关的属性 position top left
 3.盒模型 width height padding

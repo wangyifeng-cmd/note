@@ -19,8 +19,6 @@
 //alt + shift + a
 ```
 
-
-
 ### 变量交换
 
 ```js
@@ -4258,11 +4256,561 @@ f();//我是js的初始化
 f();//我是js的初始化
 ```
 
+###  严格模式
+
+1. 在严格模式下不允许使用未声明的变量
+
+   ```js
+   "use strict" //加上就回进入严格模式
+   num = 100
+   console.log(num)//num is not defined(num没定义)
+   ```
+
+2. 严格模式定义在脚本开头，会对整个js脚本都执行严格模式
+
+   ```js
+   "use strict" //加上就回进入严格模式
+   function fun() {
+        age = 100
+   }
+   fun()//age is not defined(age没定义)
+   ```
+
+3. 如果严格模式是定义在脚本开头，那么只会对当前整个函数起作用，对外面的代码没有影响
+
+   ```js
+   num = 100
+   console.log(num)//100(正常)
+   function fun(){
+        "use strict" //加上就回进入严格模式
+        age = 200//age is not defined(函数内age没定义)
+   }
+   fun()
+   ```
+
+4. 严格模式下要求函数参数名唯一
+
+   ```js
+   function sum(a,a,c){
+        "use strict"
+        return a + a + c
+   }
+   sum()//Duplicate parameter name not allowed in this context(有重复参数，报错)
+   ```
+
+5. 进制八进制数字语法
+
+   ```js
+   "use strict"
+   var sum = 015 + 197 + 99
+   console.log(sum);//Octal literals are not allowed in strict mode.(015是八进制数字)
+   ```
+
+6. 普通函数this指向---我们之前的没有严格模式下面指向window
+
+   - 面试最多，在严格模式下this指向undefined
+
+   ```js
+   function fun() {
+        "use strict"
+        console.log(this);
+   }
+   fun()
+   ```
+
+### 闭包
+
+- 在平时函数里面定义的变量值，在函数外拿不到它的值 --- 有个垃圾回收机制，当js运行的时候在计算机内部有一个“机器人”大约10秒钟（如果发现好长时间不用这个变量了，计算机会把这个标离给销毁掉）
+
+  ```js
+  function fun() {
+      var num = 10;
+      console.log(num);
+  }
+  fun()//10
+  console.log(num);//num is not defined(函数外获取不到)
+  ```
+
+- 闭包的作用：为了缓存数据，想办法把数据保存下来就解决了
+
+  - 优势：缓存数据
+  - 劣势：内存泄露，溢出，占用内存
+
+- 闭包语法：首先是函数套函数，子函数调用了父函数的变量，并且子函数被外界所引用，此时就形成了闭包。
+
+  ```js
+  function fun1() {
+      var num = 10;
+      function fun2() {
+          return num
+      }
+      return fun2;//这里返回的是一个函数，所以记得加()
+  }
+  var replace = fun1()
+  console.log(replace());//10
+  ```
+
+- 优化1
+
+  ```js
+  function fun1() {
+      var num = 10;
+      return function() {
+          return num
+      };//直接返回一个函数
+  }
+  var replace = fun1()
+  console.log(replace());//10
+  ```
+
+- 当闭包需要多个变量时
+
+  ```js
+  function fun() {
+      var a = 10
+      var b = 20
+      return [ //数组里面可以放函数
+          function() {
+              return a
+          },
+          function() {
+              return b
+          }
+      ]
+  }
+  var f = fun() //先把fun函数赋给一个变量
+  var a = f[0]()
+  var b = f[1]()
+  console.log(a, b);
+  ```
+
+- 优化2
+
+  - 返回数组优化成返回对象
+
+  ```js
+  function fun() {
+      var a = 10
+      var b = 20
+      return {//返回对象
+          getA: function() {
+              return a
+          },
+          getB: function() {
+              return b
+          }
+      }
+  }
+  var f = fun()
+  var a = f.getA()
+  var b = f.getB()
+  console.log(a, b);
+  ```
+
+- 优化3
+
+  - 把对象中的函数独立到上面，这样可以想加就自己加
+
+  ```js
+  function fun() {
+      var a = 10
+      var b = 20
+      function getA() {
+          return a
+      }
+      function getB() {
+          return b
+      }//独立函数
+      return {
+          getA: getA,
+          getB: getB
+      }
+  }
+  var f = fun()
+  var a = f.getA()
+  var b = f.getB()
+  console.log(a, b);
+  ```
+
+- 优化4
+
+  - 想继续简化，不要上面的var f = fun()
+  - 要用到 模块化开发 --- 工作中会大量使用模块化思想 -- 自执行函数()()
+
+  ```js
+  var modual = (function fun() //自执行函数
+      var a = 10
+      var b = 20
+      function getA() {
+          return a
+      }
+      function getB() {
+          return b
+      }
+      return {
+          getA: getA,
+          getB: getB
+      }
+  })()
+  var a = modual.getA()
+  var b = modual.getB()
+  console.log(a, b);
+  ```
+
+#### 闭包题目
+
+- 使用闭包和定时器 实现输出 0 1 2 3 4 5 6 7 8 9
+
+  ```js
+  //按正常情况不行 会输出10个10
+  for (var i = 0; i < 10; i++) { //有的人说for执行的快，定时器需要1秒（真正的原理：同步
+      setTimeout(function() {
+          console.log(i);//输出10个10  不满足
+      }, 1000);
+  }
+  //第一种解决方法：自执行函数
+  for (var i = 0; i < 10; i++) {
+      setTimeout((function() {
+          console.log(i);//0 1 2 3 4 5 6 7 8 9 但是还没有达到老板要求，没有闭包
+      })(), 1000)
+  }
+  //第二种解决方法：闭包的应用场景，满足了面试官的需求了--缓存数据
+  for (var i = 0; i < 10; i++) {
+      function fun() {
+          return function(i) {//这里的i为形参
+              console.log(i);//0 1 2 3 4 5 6 7 8 9 满足老板要求
+          }
+      }
+      setTimeout(fun(), 1000, i);//定时器的时间后面可以传递参数的 这里的i为实参
+  }
+  //第三种解决方法：直接使用闭包，把参数传递给父函数也是可以实现的
+  for (var i = 0; i < 10; i++) {
+      function fun(j) {
+          return function() { //这里的i为形参
+              console.log(j); //0 1 2 3 4 5 6 7 8 9 满足老板要求
+          }
+      }
+      setTimeout(fun(i), 1000); //定时器的时间后面可以传递参数的 这里的i为实参
+  }
+  ```
+
+- 想通过闭包实现点击哪个div显示哪个div
+
+  - 第一种（错误）
+
+    ```js
+    var divs = document.getElementsByTagName("div")
+    for (var i = 0; i < divs.length; i++) {
+        divs[i].onclick = function() {
+            console.log("我是第" + i + "个div");//这样无论点击哪个都是输出“我是第十个div”
+        }
+    }
+    ```
+
+  - 第二种（正确）
+
+    ```js
+    var divs = document.getElementsByTagName("div")
+    for (let i = 0; i < divs.length; i++) {
+        divs[i].onclick = (function(i) {//自执行函数 + 闭包
+            return function() {
+                console.log("我是第" + (i + 1) + "个0div");//点击哪个div显示哪个div
+            }
+        })(i);
+    }
+    ```
+
+### 同步和异步
+
+- 单线程和多线程
+  - JS是单线程：同一时间只能执行一个任务
+  - 操作系统是多线程的：C++
+- 同步编程和异步编程
+  - 同步编程(sync)---我们的任务会按照顺序一次执行，当前的任务没有完成，后面的任务是不会执行的（同一个时间只能做一个事情）我们的同步任务会放在主任务队列里面
+  - 异步编程(async)---我们的JS当遇到异步任务的时候，不会停止任务，会吸纳把异步编程放到等待任务队列里面，程序会继续往下执行，先把主任务队列里面的程序执行完毕之后，并且到了等待时间，在继续去执行异步任务（“机器人去等待任务队列里面去找异步任务，找到异步任务之后要把异步任务放到主任务队列里面去执行"）
+
+- JS里面哪些是同步哪些是异步呢？
+
+  - JS的异步编程
+
+    1. 定时器
+    2. 点击事件，普通事件都是异步
+    3. Ajax中一般也使用异步编程
+
+    - 其余的都是同步的
+
+  - JS的同步编程
+
+    - 例1
+
+      ```js
+      var startTime = new Date()
+      for (let i = 0; i < 100000000; i++) {
+          if (i == 99999999) {
+              console.log("no"); //第一次输出no(先)
+          }
+      }
+      console.log(new Date() - startTime); //222(毫秒)
+      console.log("ok"); //第二次输出ok(后)
+      ```
+
+    - 例2
+
+      ```js
+      while (1 == 1) {
+      }
+      console.log("ok");//上个任务还没执行完，所以没有输出
+      ```
+
+- 同步和异步的核心原理：（主任务队列和等待任务队列）
+  - 主任务队列：同步编译
+  - 等待任务队列：异步编译
+
+- 便于理解同步和异步的故事
+  - 小明：学完前端月薪上万，赚到钱了---开饭店（小时候的梦想）
+  - 服务员：gg（必须只能找一个服务员---js是单线程）
+  - 10:00 ：gg1来了  点了西红柿番茄炒蛋 --- 30分钟
+  - 10:01 ：gg2来了  点了牛腩粉 --- 10分钟
+  - 10:03 ：gg3来了  点了免费白开水 --- 1分钟
+  - ......
+  - 11:00 ：端菜 --- 先来白开水，然后牛腩粉，再西红柿炒蛋
+
+- 例子
+
+  ```js
+  //异步
+  setTimeout(() => {
+      console.log("西红柿炒蛋");
+  }, 50);
+  setTimeout(() => {
+      console.log("牛腩粉");
+  }, 30);
+  setTimeout(() => {
+      console.log("白开水");
+  }, 10);
+  
+  
+  //同步
+  for (let i = 0; i < 100000000; i++) {}
+  console.log("我是同步");
+  //我是同步
+  //白开水
+  //牛腩粉
+  //西红柿炒蛋
+  //总结：先执行同步，再执行异步
+  ```
+
+|                          主任务列表                          |                         等待任务队列                         |
+| :----------------------------------------------------------: | :----------------------------------------------------------: |
+| for (let i = 0; i < 100000000; i++) {}<br/>console.log("我是同步");<br/>然后一次机器人把等待任务列表的任务按时间放到主任务队列中<br/>setTimeout(() => {<br/>    console.log("白开水");<br/>}, 10);<br/>setTimeout(() => {<br/>    console.log("牛腩粉");<br/>}, 30);<br/>setTimeout(() => {<br/>    console.log("西红柿炒蛋");<br/>}, 50); | setTimeout(() => {<br/>    console.log("西红柿炒蛋");<br/>}, 50);<br/>setTimeout(() => {<br/>    console.log("牛腩粉");<br/>}, 30);<br/>setTimeout(() => {<br/>    console.log("白开水");<br/>}, 10); |
+
+### 引入init对象初始化
+
+- 正常对象
+
+  ```js
+  var obj = {
+       name: "ff",
+       age: "23",
+       showName: function() {
+       	console.log("姓名是：" + this.name);
+       },
+       showAge: function() {
+       	console.log("年龄是：" + this.age);
+       },
+  }
+  console.log(obj.name);
+  console.log(obj.age);
+  ```
+
+- 添加init初始化的对象
+
+  ```js
+  var obj = {
+      name: "默认值",
+      age: "默认值",
+      showName: function() {
+          console.log("姓名是：" + this.name);
+      },
+      showAge: function() {
+          console.log("年龄是：" + this.age);
+      },
+      init: function(name, age) {
+          this.name = name
+          this.age = age
+      }
+  }
+  obj.init("ff", "23")//初始化
+  console.log(obj.name);
+  console.log(obj.age);
+  ```
+
+- 继续优化（把console.log省略）
+
+  ```js
+  var obj = {
+      name: "默认值",
+      age: "默认值",
+      showName: function() {
+          console.log("姓名是：" + this.name);
+      },
+      showAge: function() {
+          console.log("年龄是：" + this.age);
+      },
+      init: function(name, age) {
+          this.name = name
+          this.age = age
+              //还可以调用方法
+          this.showName()
+          this.showAge()
+      }
+  }
+  obj.init("ff", "23")
+  ```
+
+### 设计模式
+
+- 历史：设计模式是从建筑行业来的（我们叫做搬砖，码农）
+
+- 常见的设计模式：单例模式，发布订阅模式（观察者模式），工厂模式（命名空间模式，代理模式 ...了解即可）
+
+  #### 单例模式例子（一定要会的，经常用的只有这个）
+
+  - 实例化对象
+
+  ```js
+  function Person() {
+  }
+  //实例化对象
+  var p1 = new Person()
+  var p2 = new Person()
+  var p3 = new Person()
+  var p4 = new Person()
+  var p5 = new Person()
+  //单例模式
+  //输出全是false，因为每个都是新的实例化对象
+  console.log(p1 === p2);//false
+  console.log(p1 === p3);//false
+  console.log(p2 === p3);//false
+  console.log(p1 === p4);//false
+  console.log(p2 === p5);//false
+  ```
+
+  - 上面先后实例化的对象判断不相同的解决方法
+
+  ```js
+  var _instance
+  function Person() {
+      if (_instance) {
+          console.log("之前已经创建了对象，直接返回创建好的对象就可以了");
+          return _instance
+      }
+      // 原理：因为我们这段代码执行了三部曲，所以p1，p2，p3不是同一个对象，每次new都会创建一个对象
+      // 第一，默认的创建一个新对象 var obj = new Object()
+      // 第二，默认的把这个对象赋值给this  this = obj
+      // 第三，默认返回对象 return this
+      _instance = this
+      console.log("第一次创建对象");
+  }
+  //实例化对象
+  var p1 = new Person()
+  var p2 = new Person()
+  var p3 = new Person()
+  var p4 = new Person()
+  var p5 = new Person()
+  //单例模式
+  console.log(p1 === p2);
+  console.log(p1 === p3);
+  console.log(p2 === p3);
+  console.log(p1 === p4);
+  console.log(p2 === p5);
+  // 输出结果:
+  // 第一次创建对象
+  // 之前已经创建了对象，直接返回创建好的对象就可以了
+  // 之前已经创建了对象，直接返回创建好的对象就可以了
+  // 之前已经创建了对象，直接返回创建好的对象就可以了
+  // 之前已经创建了对象，直接返回创建好的对象就可以了
+  // true
+  // true
+  // true
+  // true
+  // true
+  ```
+
+  #### 发布订阅模式（观察者模式）
+
+  - 发布订阅模式（观察者模式）
+    举例：销售部的小姐姐---有新的房源了---发布者
+    发布者：具有发布信息的能力
+    客户1--->联系电话
+    客户2--->联系qq
+    客户3--->联系微信
+    订阅者：--也有人叫做订阅模式（根据发布信息的状态，或者发布的信息，来采取一些的行
+
+  ```js
+  // 发布者发布信息：女神：Xinny  男生：Ben
+  var Xinny = { //发布者
+      eat: function() {
+          console.log("我饿了")
+          //让Ben和FF有了联系方式
+          Ben.Ben_eat()//此时就有了联系方式，也有人叫做注册订阅者
+          FF.FF_eat()
+      },
+  }
+  // 订阅者：（观察者）对象 Ben
+  var Ben = {
+      Ben_eat: function() {
+          console.log("邀请女神吃小龙虾！--- Ben")
+      }
+  }
+  //订阅者（观察者）对象 FF
+  var FF = {
+      FF_eat: function() {
+          console.log("邀请女生吃螺蛳粉! --- FF");
+      }
+  }
+  Xinny.eat()
+  ```
+
+  #### 工厂模式（有点难，基本被淘汰，现在面试基本不会问到，了解即可）
+
+  1. 提供一个构造函数（工厂模式）
+  2. 设置构造函数原型对象（设置共同的属性和方法）
+  3. 生产车间（在构造函数身上提供一个静态的工厂方法）
+  4. 建立合作关系（定制合作关系 --- 签合同）
+  5. 获取产品 --- 生产产品 --- 嗲用工厂模式，传递参数
+
+  #### 命名空间模式
+
+  - 以后我们的项目都会用模块化开发来写项目，我们的命名空间模式一般都是以项目的名字首字母大写来命名的。现在流行是模块化开发。 --- 了解即可
+
+  ```js
+  var GG = {}
+  GG.a = 10
+  GG.b = 20
+  GG.obj = {
+      name: 'ff',
+      age: 23
+  }
+  GG.fun = function() {
+      console.log('函数');
+  }
+  GG.Person = function() {
+      this.name = 'ff'
+  }
+  console.log(new GG.Person());
+  //总结：以上这种写法用大写字幕来命名的 --- 我们都叫做命名空间模式
+  ```
 
 
 
 
-## ES6
+
+
+
+
+
+# ES6
 
 ### 箭头函数
 
@@ -4310,6 +4858,7 @@ setTimeout(() => {
 ```js
 const obj = {
     aaa() {
+         //普通函数
         setTimeout(function(){
             setTimeout(function(){
                 console.log(this);//window
@@ -4318,6 +4867,7 @@ const obj = {
                 console.log(this);//window
             });
         })
+         //箭头函数
         setInterval(() => {
             setTimeout(function(){
                 console.log(this);//window
@@ -4329,6 +4879,975 @@ const obj = {
     }
 }
 ```
+
+### 箭头函数简化过程
+
+- 普通函数
+
+  ```js
+  function fun(a) {
+      return a + 1
+  }
+  ```
+
+- 变成箭头函数
+
+  ```js
+  var fun = a => {
+      return a + 1
+  }
+  ```
+
+- 最终形态
+
+  ```js
+  var fun = a => a + 1
+  ```
+
+- 总结：去掉function关键字，小括号和{}之间有一个 =>，如果有一个可以省略小括号，如果函数体里面只有一行代码{}和return 可以同时省略
+
+- 面试题
+
+  ```js
+  //把下面的函数变成箭头函数
+  var a = b => {
+      return c => {
+          return b + c
+      }
+  }
+  
+  //简化后6
+  var a = b => c => b + c
+  ```
+
+### 扩展filter方法（筛选）
+
+- 过滤filter（函数）返回的是满足条件的每个元素，组成一个新数组---做过滤用的（有三个参数：第一个参数是每个元素ele，第二个参数是元素的索引，第三个参数是原数组---后面两个参数我们用不到是可以省略的）---应用场景：一般删除某些不符合条件的而用filter
+
+  ```js
+  var arr = [10, 20, 30, 40, 50, 60, 70, 80]
+  var newArr = arr.filter(function(ele) {
+      return ele > 40
+  })
+  console.log(newArr);//50 60 70 80
+  ```
+
+### 扩展forEach方法
+
+- 便利数组用的 --- 相当于我们的for循环（但是forEach不支持return）
+
+- 有三个参数：第一个参数元素，第二个参数索引，第三个参数数组本身，不需要可以省略
+
+  ```js
+  var arr = [10, 20, 30, 40, 50]
+  arr.forEach(function(ele, index) {
+      console.log(ele + "=====" + index);
+  })
+  //10=====0
+  //20=====1
+  //30=====2
+  //40=====3
+  //50=====4
+  ```
+
+- 面试官：问forEach和for有什么区别
+
+  1. forEach不支持return
+  2. for循环可以看作一步一步地实现 --- 叫做编程式，forEach不考虑内部怎么运行 --- 叫申明式，也不支持return
+
+### 复习for in
+
+- 有什么特点：循环遍历会把key变成字符串类型的，还会把数组的私有的和共有的都遍历循环
+
+  ```js
+  var arr = [10, 20, 30, 40, 50]
+  for (var key in arr) {
+      console.log(arr[key]);
+  }
+  //10
+  //20
+  //30
+  //40
+  //50
+  ```
+
+### 扩展for of
+
+- 这个是ES6的，及支持return，又不会把key变成字符串
+
+  ```js
+  var arr = [10, 20, 30, 40, 50]
+  for (var val of arr) {
+      console.log(val);
+  }
+  //10
+  //20
+  //30
+  //40
+  //50
+  ```
+
+### 扩展map()
+
+- 映射 --- map函数，回调函数return，返回什么，这一项就是什么，没有return，返回的是undefined（有三个参数，第一个参数是每个元素的值，第二个参数是元素的索引，第三个参数就是原数组 arr）
+
+  ```js
+  var arr = [10, 20, 30, 40, 50]
+  var newArr = arr.map(function(ele, index) {
+      console.log(ele, index)
+          //10 0
+          //20 1
+          //30 2
+          //40 3
+          //50 4
+      return ele *= 3
+  })
+  console.log(newArr);//[30, 60, 90, 120, 150]  
+  ```
+
+### 扩展ES6的方法
+
+#### includes()
+
+- ES6 includes() 判断数组有没有某一项，返回的是布尔类型，有就返回true，反之返回false
+
+  ```js
+  var arr = [1, 2, 3, 4, 5, 6]
+  var result = arr.includes(5)
+  console.log(result);//true
+  ```
+
+#### find()
+
+- ES6 find() 返回找到的那一项，回调函数中如果返回true就表示找到了，找到后停止循环，如果找不到返回的是undefined
+
+  ```js
+  var arr = [1, 2, 3, 4, 5, 6, 66, 88]
+  var result = arr.find(function(ele, index) {
+      return ele > 5
+  })
+  console.log(result);//6
+  ```
+
+#### findIndex()
+
+- 先遍历数组，回调函数返回true，停止查找，返回的是当前项的索引
+
+  ```js
+  var arr = ["hhhh", "别吧", 1, 2, 3, 4, 5, 6, 66, 88]
+  var i = arr.findIndex(function(item) {
+      return typeof item === "number"
+  })
+  console.log(i); //2
+  ```
+
+
+#### reduce()
+
+- reduce有四个参数，返回的是叠加后的结果
+
+  1. 第一个参数，上一个 prev 代表数组的第一项
+  2. 第二个参数，下一个 nex嗲表数组的第二项
+  3. 第三个参数，索引  index  代表数组的索引
+  4. 第四个参数， 原数组  arr  代表的原数组
+
+  ```js
+  var arr = [1, 2, 3, 4, 5]
+  var result = arr.reduce(function(prev, next, index, arr) {
+      console.log(prev, next)
+  })
+  console.log(result);
+  //1 2
+  // undefined 3
+  // undefined 4
+  // undefined 5
+  // undefined
+  ```
+
+- 总结：第二次循环的时候，prev是 undefined，next是数组的第三项，后面以此类推，因为没有加return，如果加了return返回值就不会是undefined
+
+  ```js
+  var arr = [1, 2, 3, 4, 5]
+  var result = arr.reduce(function(prev, next, index, arr) {
+      console.log(prev, next)
+      return 100//加了返回值，prev第二次就不会是undefined（注意：本次的返回值会作为下一次prev）
+  })
+  console.log(result);
+  // 1 2
+  // 100 3
+  // 100 4
+  // 100 5
+  // 100
+  ```
+
+- 一般我们<u>求合</u>用reduce()
+
+  ```js
+  var arr = [1, 2, 3, 4, 5]
+  var result = arr.reduce(function(prev, next, index, arr) {
+      return prev + next
+  })
+  console.log(result); //15
+  ```
+  
+- 需求：还可以把两个数组合并成一个数组 --- 典型的二维数组
+
+  ```js
+  var flat = [
+      [1, 2, 3],
+      [4, 5, 6],
+      [7, 8, 9]
+  ].reduce(function(prev, next) {
+      return prev.concat(next)
+  })
+  console.log(flat);//[1, 2, 3, 4, 5, 6, 7, 8, 9]  下·这就是把二维数组组合成一堆数组 --- 叫做数组的扁平化
+  ```
+
+- reduceRight 跟reduce 一样，只是顺序从右侧开始
+
+### ES6新增 let 和 const 定义变量
+
+- 定义变量以前我们用var，es6里面有两个 let 和 const
+
+1. 预解析（变量提升）
+
+   - var
+
+     ```js
+     console.log(a);
+     var a//undefined  var能通过预解析，或者说变量提升结果是undefined
+     ```
+
+   - let
+
+     ```js
+     console.log(a);
+     let a //报错
+     ```
+
+   - const
+
+     ```js
+     console.log(a);
+     const a //报错
+     ```
+
+2. 会不会给window添加属性
+
+   - let和const不会给window添加属性
+
+3. 声明变量次数
+
+   - var
+
+     ```js
+     var a = 12
+     var a = 13
+     console.log(a);//13
+     ```
+
+   - let
+
+     ```js
+     let a = 12
+     let a = 13
+     console.log(a); //报错
+     ```
+
+   - const
+
+     ```js
+     const a = 12
+     const a = 13
+     console.log(a); //报错
+     ```
+
+4. 必须赋值吗
+
+   - var不必须
+   - let不必须
+   - const必须
+   
+4. 声明后是否能改
+
+   - var
+
+     ```js
+     var a = 12
+     a = 13
+     console.log(a);//13
+     ```
+
+   - let
+
+     ```js
+     let a = 12
+     a = 13
+     console.log(a); //13
+     ```
+
+   - const
+
+     ```js
+     const a = 12
+     a = 13
+     console.log(a); //报错
+     ```
+
+#### 总结
+
+|       | 预解析 | 是否可以给window添加属性 | 声明变量次数 | 必须赋值 | 声明后是否能重复改值 |
+| :---: | :----: | :----------------------: | :----------: | :------: | :------------------: |
+|  var  |   Y    |            Y             |     多次     |    F     |          Y           |
+|  let  |   F    |            F             |      1       |    F     |          Y           |
+| const |   F    |            F             |      1       |    Y     |          F           |
+
+### 数组的解构赋值
+
+- 如果想把数组中的值一个一个赋值给单独声明的变量，非常麻烦
+
+  ```js
+  let arr = [1,2,3,4,5]
+  let x = arr[0]
+  let y = arr[1]
+  let z = arr[2]
+  let m = arr[3]
+  let n = arr[4]
+  ```
+
+- 引出解析复制 --- 大招
+
+  ```js
+  let arr = [1, 2, 3, 4, 5]
+  let [x, y, z, m, n] = arr
+  console.log(x, y, z, m, n);//1 2 3 4 5
+  ```
+
+- 如果后面的数组值不够，默认的是undefined
+
+  ```js
+  let [x, y, z, m, n] = [1, 2, 3]
+  console.log(x, y, z, m, n); //1 2 3 undefined undefined
+  ```
+
+- 反过来，如果后面的数组值超过了，后面的数据就不接收了，丢掉即可
+
+  ```js
+  let [x, y, z, m, n] = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+  console.log(x, y, z, m, n); //1 2 3 4 5 
+  ```
+
+
+- 设置默认值，只有后面的解析值是undefined的时候，或者没有写的时候才会走默认值
+
+  ```js
+  let [x1,x2 = 10] = [1]
+  console.log(x1,x2);//1 10
+  ```
+
+
+### 扩展块级作用域
+
+- var没有块级作用域，而let和const有
+
+- var
+
+  ```js
+  {
+      var a = 23
+  }
+  console.log(a);//23 能访问到块级作用域里定义的值
+  ```
+
+- let 和 const
+
+  ```js
+  {
+      let a = 23
+      const b = 24
+  }
+  console.log(a); //a is not defined 不能访问到块级作用域里的值
+  console.log(b); //b is not defined 不能访问到块级作用域里的值
+  ```
+
+- for循环例子
+
+  - var
+
+    ```js
+    var liObjs = document.getElementsByTagName("li")
+    for (var i = 0; i < liObjs.length; i++) {
+        liObjs[i].onclick = function() {
+            console.log(i); //点击哪个都是输出5
+        }
+    }
+    ```
+
+  - 用let解决问题， 
+
+    ```js
+    var liObjs = document.getElementsByTagName("li")
+    for (let i = 0; i < liObjs.length; i++) { //用let定义i可以解决问题
+        liObjs[i].onclick = function() {
+            console.log(i); //点击哪个输出哪个的下标
+        }
+    }
+    ```
+
+  - 或者用自定义属性来解决
+
+    ```js
+    var liObjs = document.getElementsByTagName("li")
+    for (let i = 0; i < liObjs.length; i++) {
+        liObjs[i].index = i//通过自己自定义属性
+        liObjs[i].onclick = function() {
+            console.log(this.index);
+        }
+    }
+    ```
+
+### 对象解析结构
+
+- 一般情况下调用对象
+
+  ```js
+  var obj = {
+      name: "gg",
+      age: "18"
+  }
+  console.log(obj.name);//gg
+  console.log(obj.age);//18
+  ```
+
+- 如果变量名和属性名是一样的可以省略
+
+  ```js
+  let {name: name,age: age} = {name: "gg",age: 18}
+  let {name,age} = {name:"gg",age:18}//简化版本
+  console.log(name, age); //gg 18
+  ```
+
+- 对象里面设置默认值，只有后面解构的值是undefined的时候，或者没有的时候才回走默认值
+
+  ```js
+  let {name,age = 100} = {name:"gg",age:undefined}
+  console.log(name, age);//gg 100
+  ```
+
+### 数组的解构赋值
+
+- 类似于数组，工作里面很多人把字符串叫做类数组 -- 因为长得很像
+
+  ```js
+  let [a, b, c, d, e] = "hello"
+  console.log(a, b, c, d, e);//h e l l o
+  ```
+
+- 测试题
+
+  ```js
+  let [a, b, c, d, e, length] = "hello world"
+  console.log(length) //空  字符串是拿不到这个长度的
+  ```
+
+- 用对象的方式就可以拿到了
+
+  ```js
+  let {length} = "hello world"
+  console.log(length)
+  ```
+
+### 扩展字符串方法
+
+- includes() --- 判断字符串当中是否包含了指定的字符，如果有返回true，否则返回false语法格式：includes("指定的字符",开始查找的位置)
+
+  ```js
+  console.log("hello world".includes("world")); //true
+  console.log("hello world".includes("world", 6)); //true
+  console.log("hello world".includes("world", 7)); //false
+  ```
+
+- startsWith() --- 判断字符串是否以特定的字符串开始
+
+- endsWith() --- 判断字符串是否以特定的字符串结束
+
+  ```js
+  let url = "admin/index.php"
+  console.log(url.startsWith("admin"));
+  console.log(url.startsWith("i", 3));
+  console.log(url.endsWith("php"));
+  console.log(url.endsWith("php", 15));//true  这个
+  ```
+
+### 扩展两个ES7的方法
+
+- padStart 和 padEnd 按照指定字符补全字符串的指定长度
+
+  - padStart()
+
+    ```js
+    var str = "ab"
+    console.log(str.padStart(5, "ghkjjjj"));//ghkab
+    ```
+
+  - padEnd()
+
+    ```js
+    var str = "ab"
+    console.log(str.padEnd(5, "ghkjjjj"));//abghk
+    ```
+
+### 调试 --- 断点
+
+- 右键检查后，在console旁边的sourses，设置断点，然后刷新页面，就可以debug了
+
+### ES6模板字符串
+
+- 小斜点  `
+
+- 加变量的时候直接加 ${变量}
+
+  ```js
+  let obj = {
+      name: "gg",
+      age: 18,
+      sex: "nv"
+  }
+  // 正常情况
+  var tag = "<div><span>" + obj.name + "</span><span>" + obj.age + "</span><span>" + obj.sex + "</span></div>"
+  console.log(tag);
+  // 小斜点情况
+  var tpl = `<div><span>${obj.name}</span><span>${obj.age}</span><span>${obj.sex}</span></div>`
+  console.log(tpl);
+  ```
+
+### 函数扩展
+
+- 正常情况函数默认值
+
+  ```js
+  function fun(x, y) {
+      x = x || "牛腩粉"
+      y = y || "很好吃"
+      console.log(x, y);
+  }
+  fun(1)//1 很好吃
+  ```
+
+- 面试题来了：但是代入值是0时表示空，没有覆盖默认值
+
+  ```js
+  function fun(x, y) {
+      x = x || "牛腩粉"
+      y = y || "很好吃"
+      console.log(x, y);
+  }
+  fun(0)//牛腩粉 很好吃
+  ```
+
+- 解决方法：ES6语法
+
+  ```js
+  function fun(x = "牛腩粉", y = "很好吃") {
+      console.log(x, y);
+  }
+  fun(0)//0 "很好吃"
+  ```
+
+- 继续扩展 --- 参数也是可以使用结构赋值
+
+  - 首先小心这种情况
+
+    ```js
+    function fun({
+        x = "牛腩粉",
+        y = "很好吃"
+    }) {
+        //报错了  相当于{x = "牛腩粉",y = "很好吃"} = undefined
+        console.log(x, y);
+    }
+    fun()
+    ```
+
+  - 改正
+
+    ```js
+    function fun({
+        x = "牛腩粉",
+        y = "很好吃"
+    } = {}) {//让他等于一个空对象就可以了，相当于我们前面的解构赋值
+        console.log(x, y);
+    }
+    fun() //牛腩粉 很好吃
+    ```
+
+- 函数length属性
+
+  - 即当前的形参的个数
+
+    ```js
+    function fun(x, y) {
+    }
+    fun(1, 2)
+    console.log(fun.length);//2
+    ```
+
+  - 特点：length属性，如果形参有默认值，length会失真
+
+    ```js
+    function fun(x = 3, y = 4) {
+    }
+    fun(1, 2)
+    console.log(fun.length); //0
+    ```
+
+- arguments 伪数组 或者类数组 --- 可以拿到用户传递的参数个数
+
+  ```js
+  function fun() {
+      console.log(arguments);//Arguments(6) [1, 2, 3, 4, 5, 6, callee: ƒ, Symbol(Symbol.iterator): ƒ]
+  }
+  fun(1, 2, 3, 4, 5, 6)
+  ```
+
+### 数组扩展
+
+- Array() --- 数组方法
+
+  ```js
+  console.log(Array(1, 2, 3));//[1, 2, 3]
+  ```
+
+- 特殊情况 --- Array()的参数只有一个的时候，就会输出空值empty
+
+  ```js
+  console.log(Array(7));//[empty × 7]
+  ```
+
+- Array.of() --- 如果想输出单元素数组时的解决方法
+
+  ```js
+  console.log(Array.of(7));//[7]
+  ```
+
+- Array.from(数组/类数组) --- 返回的是一个数组 （类数组就是具备length属性）
+
+  ```js
+  console.log(Array.from([1, 2, 3, 4, 5])); //[1, 2, 3, 4, 5]
+  console.log(Array.from("123")); //["1", "2", "3"]
+  console.log(Array.from(document.getElementsByTagName('li'))); //[li, li, li, li, li]
+  ```
+
+- Array.copyWithin() --- 从原数组中读取内容，替换数组中指定位置的内容
+
+  Array.copyWithin(替换的目标起始位置target，查找的起始位置begin，查找的结束位置end)
+
+  ```js
+  let arr = [1, 2, 3, 4, 5, 6, 7, 8]
+  console.log(arr.copyWithin(4, 2, 4));//[1, 2, 3, 4, 3, 4, 7, 8]
+  ```
+
+- fill() --- 按照指定的字符串填充数组，将数组的每一项都变成指定的字符串
+
+  ```js
+  let arr1 = [1, 2, 3, 4, 5, 6, 7, 8]
+  console.log(arr1.fill("gg"))//["gg", "gg", "gg", "gg", "gg", "gg", "gg", "gg"]
+  let arr2 = [1, 2, 3, 4, 5, 6, 7, 8]
+  console.log(arr2.fill("gg", 3, 5))//[1, 2, 3, "gg", "gg", 6, 7, 8]
+  ```
+
+### 数组的空位问题
+
+- 数组的空位：数组的某个索引位置没有任何值
+
+  ```js
+  let arr = [, , , , , , ]
+  console.log(arr.length); //6
+  ```
+
+- 注意undefined不是空值
+
+  - 用in来测试数组指定索引位置有没有值，如果有就回返回true，如果没有就返回false
+
+  ```js
+  let arr = [, , , , , , ]
+  console.log(1 in arr);//false
+  ```
+
+  ```js
+  let arr = [, undefined, , , , , ]
+  console.log(1 in arr); //true
+  ```
+
+- 继续扩展（例子：循环遍历）
+
+  - ES5中数组方法对空位置处理不一致，一般直接跳过空位
+
+    - filter()
+
+      ```js
+      let arr = [1, 2, , , , 3]
+      arr.filter(function(item) {
+          console.log(item);//1 2 3
+      })
+      ```
+
+    - for in 循环
+
+      ```js
+      let arr = [1, 2, , , , 3]
+      for (let key in arr) {
+          console.log(arr[key]);//1 2 3
+      }
+      ```
+
+  - ES6中会空位处理成undefined
+
+    - find()
+
+      ```js
+      let arr = [1, 2, , , , 3]
+      arr.find(function(item) {
+          console.log(item);//1 2 undefined undefined undefined 3
+      })
+      ```
+
+    - for of
+
+      ```js
+      let arr = [1, 2, , , , 3]
+      for (const item of arr) {
+          console.log(item);//1 2 undefined undefined undefined 3
+      }
+      ```
+
+### 扩展运算符(点点点...)
+
+- 可以将类数组具有length属性都变成数组
+
+  ```js
+  let st r = "123"
+  console.log([...str]);//["1", "2", "3"]
+  ```
+
+- 可以将html获取到的<u>集合</u>变成数组
+
+  ```js
+  console.log([...document.getElementsByTagName("li")]);//[li, li, li, li, li]
+  ```
+
+- 可以将arguments类数组  变成数组
+
+  ```js
+  function fun() {
+      console.log([...arguments]); //[1,2,3,4,5]
+  }
+  fun(1, 2, 3, 4, 5)
+  ```
+
+- 将两个数组合并，相倒concat，但是"点点点”更好用
+
+  ```js
+  let arr1 = [1, 2, 3, 4, 5]
+  let arr2 = [10, 20, 30, 40, 50]
+  console.log(arr1.concat(arr2));//[1, 2, 3, 4, 5, 10, 20, 30, 40, 50]
+  console.log([...arr1, ...arr2]);//[1, 2, 3, 4, 5, 10, 20, 30, 40, 50] 点点点
+  ```
+
+- 求数组最大值
+
+  ```js
+  let arr = [1, 2, 3, 4, 5, 32, 45, 99]
+  console.log(Math.max(arr)); //NaN
+  
+  //普通方法
+  console.log(Math.max(1, 2, 3, 4, 5, 32, 45, 99)); //99
+  
+  //大招(点点点...)
+  console.log(Math.max(...arr)); //99 
+  
+  //apply()方法
+  console.log(Math.max.apply(null, arr));//99 不需要this 给null占个位
+  
+  //eval()方法
+  console.log(eval("Math.max(" + arr + ")"));//99
+  ```
+
+### 对象扩展
+
+- 键值对相同可以简写
+
+  ```js
+  let name = 'gg',
+      age = 18
+  let peo = {
+      name,
+      age
+  }
+  console.log(peo); //{name: "gg", age: 18}
+  ```
+
+- 如果对象中的属性是函数也可以简写
+
+  ```js
+  let obj = {
+      fun1: function() {
+          console.log('我是原始对象中的方法');//我是原始对象中的方法
+      },
+      fun2() {
+          console.log('我是ES6对象中的方法');//我是ES6对象中的方法
+      }
+  }
+  obj.fun1()
+  obj.fun2()
+  ```
+
+### Symbol类型 --- ES6新增的类型，是一个新的基本数据类型，简单数据类型，值类型
+
+- 使用Symbol函数执行得到一个Symbol数据类型，跟字符串类似，使用Symbol函数得到一个数据，<u>每一个都是完全不相同的</u>
+
+  ```js
+  let sym1 = Symbol()
+  console.log(typeof sym1);
+  //Symbol() 可以接受一个参数
+  let sym2 = Symbol("foo")
+  let sym3 = Symbol("foo")
+  console.log(sym2 == sym3);//false 即使传递的参数一样的，值也是一样的，但就是不同
+  ```
+
+- Symbol诞生的作用：一般当作对象的属性（对象的属性如果重名了会覆盖，而我们的Symbol绝对不会覆盖的）任意的要给Symbol()得到的值都是不同的
+
+  ```js
+  let sym1 = Symbol()
+  let sym2 = Symbol()
+  let obj = {
+      [sym1]: "牛腩粉"
+  }
+  obj[sym2] = "好好吃"
+  console.log(obj)//{Symbol(): "牛腩粉", Symbol(): "好好吃"}
+  ```
+
+- Symbol()值是不可以转换为数字的，也是不可以进行字符串拼接的
+
+  ```js
+  Number(Symbol(1))//报错
+  ```
+
+- Symbol是可以转换为布尔的
+
+  ```js
+  console.log(!Symbol("1"));
+  ```
+
+- Symbol是可以嗲用toString方法，变成一个字符串
+
+  ```js
+  console.log(Symbol("gg").toString());//Symbol(gg)
+  ```
+
+- Symbol.for() 如果有相同参数的Symbol值，找到这个值并返回，如果没有就回创建一个新的Symbol
+
+  ```js
+  let demo1 = Symbol.for("hahaha")
+  let demo2 = Symbol.for("hahaha")
+  console.log(demo1 == demo2); //true 使用Symbol.for 如果参数相同，值就相同
+  ```
+
+- Symbol.keyFor() 找到Symbol.for创建的值，如果使用是Symbol创建的找不出来，结果是undefined
+
+  ```js
+  let sym = Symbol("wowowo")
+  let demo = Symbol.for("hahaha")
+  console.log(Symbol.keyFor(sym));//undefined
+  console.log(Symbol.keyFor(demo));//hahaha
+  ```
+
+### Set类型 --- 类似数组，只有value，没有键key（跟我们对象不太一样，我们对象是键值对）
+
+- 通过构造函数的方式创建Set示例 new
+
+- 参数是一个数组（或者说是类数组，书本上还有说类数组是有 iterable 接口）
+
+- 了解即可：那些有iterable接口？数组，arguments，元素集合，Set，字符串这些都有
+
+  ```js
+  console.log(new Set([1, 2, 3, 4, 5]));//{1, 2, 3, 4, 5}
+  console.log(new Set("12345"));//{"1", "2", "3", "4", "5"}
+  //arguments也是可以的
+  function fun() {
+      console.log(new Set(arguments));//{1, 2, 3, 4, 5}
+  }
+  fun(1, 2, 3, 4, 5)
+  ```
+
+- 会默认去重，如果有重复的项，会自动去掉
+
+  ```js
+  console.log(new Set([1, 1, 1, 1, 2, 2, 3, 4, 4, 4, 5]));//{1, 2, 3, 4, 5}
+  ```
+
+- 扩展原型方法：add，clear，delete，has，forEach，keys，values，entries
+
+  - add() --- 添加，如果之前没有加上，有则不加，返回增加后的实例
+
+    ```js
+    let set = new Set([1, "牛腩粉", null, true])
+    console.log(set.add(10)); //{1, "牛腩粉", null, true, 10}
+    //可以实现链式操作 add 注意：里面的参数只能有一个，后面多加的不生效
+    console.log(set.add(20).add(30, 40)); //{1, "牛腩粉", null, true, 10, 20, 30}
+    ```
+
+  - delete() --- 删除返回值：true/false  如果有这一项删除成功返回true，如果没有此项删除失败返回false
+
+    ```js
+    let set = new Set([1, "牛腩粉", null, true])
+    console.log(set.delete(1));//true
+    ```
+
+  - clear() --- 清空 返回值是undefined
+
+    ```js
+    let set = new Set([1, "牛腩粉", null, true])
+    console.log(set.clear());//undefined
+    ```
+
+  - has() --- 判断有没有此项，返回值true/false
+
+    ```js
+    let set = new Set([1, "牛腩粉", null, true])
+    console.log(set.has(1));//true
+    ```
+
+  - forEach，keys，values，entries --- 循环遍历
+
+    ```js
+    let set = new Set([1, "牛腩粉", null, true])
+    set.forEach((item,index,input) => {
+        //Set实例只有value，没有key
+        //item，index 都是当前项 value
+        console.log((item,index));
+    });
+    ```
+
+    
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
